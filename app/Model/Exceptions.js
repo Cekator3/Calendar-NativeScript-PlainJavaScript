@@ -1,9 +1,13 @@
-export class MonthNotExistException extends Error
+export class DateNotExistException extends Error
 {
-    monthNumber;
-    constructor(monthNumber)
+    year;
+    month;
+    day;
+    constructor(year = undefined, month = undefined, day = undefined)
     {
-        super('Month with number ' + monthNumber + " doesn't exist.");
-        this.monthNumber = monthNumber;
+        super('Date "' + year + '-' + month + '-' + day + '" not exist');
+        this.year = year;
+        this.month = month;
+        this.day = day;
     }
 }
