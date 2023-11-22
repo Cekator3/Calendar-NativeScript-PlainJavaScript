@@ -1,5 +1,5 @@
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
-import {WEEKDAY_SATURDAY, WEEKDAY_SUNDAY} from "~/Model/WeekdaysConstants";
+import {WEEKDAY_SATURDAY} from "~/Model/WeekdaysConstants";
 
 /**
  * Represents a day of the week.

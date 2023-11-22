@@ -1,5 +1,5 @@
 import {DayOfCalendar} from "~/Model/DayOfCalendar";
-import {getWeekday} from "~/Model/WeekdayOfFirstDay";
+import {getWeekday} from "~/Model/getWeekday";
 import {WEEKDAY_MONDAY} from "~/Model/WeekdaysConstants";
 import {generateDayOfCalendar} from "~/Model/CalendarContentGenerator/generateDayOfCalendar";
 

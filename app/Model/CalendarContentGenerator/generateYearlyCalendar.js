@@ -1,6 +1,4 @@
 import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/MonthsConstants";
-import {getWeekday} from "~/Model/WeekdayOfFirstDay";
-import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generateMonthlyCalendar";
 
 function getLastDayOfMonth(indexOfFirstDay, amountOfDaysInMonth)

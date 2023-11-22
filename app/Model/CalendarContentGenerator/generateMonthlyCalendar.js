@@ -1,4 +1,4 @@
-import {getWeekday} from "~/Model/WeekdayOfFirstDay";
+import {getWeekday} from "~/Model/getWeekday";
 import {WEEKDAY_MONDAY, WEEKDAY_SUNDAY} from "~/Model/WeekdaysConstants";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {DayOfCalendar} from "~/Model/DayOfCalendar";
