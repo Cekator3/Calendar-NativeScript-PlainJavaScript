@@ -1,4 +1,5 @@
 
+
 /**
  * Generates calendar content for the month containing the specified date.
  * @param {bool} isIncludingOutOfMonthDays Value indicating whether out-of-month days should be included.
@@ -10,6 +11,7 @@
  */
 export function generateMonthlyCalendar(isIncludingOutOfMonthDays, year, month, day)
 {
-    return [];
+    let result = [];
+    return result;
 }
 

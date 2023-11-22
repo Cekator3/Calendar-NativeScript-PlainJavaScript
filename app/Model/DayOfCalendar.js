@@ -1,18 +1,38 @@
+import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
+
+/**
+ * Represents a day of the week.
+ */
 export class DayOfCalendar
 {
     day;
-    isOutOfMonthDay;
-    isWeekend;
+    month;
+    year;
+    weekend;
 
     /**
-     * @param {number} day - The day of the week.
-     * @param {boolean} isOutOfMonthDay - Indicates if the day is outside the current month.
-     * @param {boolean} isWeekend - Indicates if the day is a weekend day.
+     * @constructor
+     * @param {number} day - The day of the month.
+     * @param {number} month - The month of the year.
+     * @param {number} year - The year.
+     * @param {number} weekend - The weekend of the date (0 - Monday, 7 - Sunday).
      */
-    constructor(day, isOutOfMonthDay, isWeekend)
+    constructor(day, month, year, weekend)
     {
         this.day = day;
-        this.isOutOfMonthDay = isOutOfMonthDay;
-        this.isWeekend = isWeekend;
+        this.month = month;
+        this.year = year;
+        this.weekend = weekend;
+    }
+
+    /**
+     * Checks if that date is user's current date.
+     * @returns {boolean}
+     */
+    isCurrentDay()
+    {
+        return (this.year === getUsersCurrentYear()) &&
+               (this.month === getUsersCurrentMonth()) &&
+               (this.day === getUsersCurrentDay());
     }
 }

@@ -10,66 +10,39 @@ function getAmountOfDaysInPreviousMonth(month)
     return getAmountOfDaysInMonth(month - 1);
 }
 
-/**
- * Generates an array of `DayOfCalendar` objects starting from a given day,
- * for a specified number of days.
- *
- * @param {number} amount - The number of days to generate.
- * @param {number} startingDay - The starting day.
- * @param {number} weekdayOfStartingDay - The weekday of the starting day.
- * @param {boolean} isOutOfMonthDays - Indicates if the generated days are out of the month range.
- * @returns {DayOfCalendar[]} - An array of `DayOfCalendar` objects.
- */
-function addDays(amount, startingDay, weekdayOfStartingDay, isOutOfMonthDays)
+function generateDayFromPreviousMonth(year, month, weekday, dayIndex)
 {
-    let result = [];
-    let currWeekday = weekdayOfStartingDay;
-    for (let i = startingDay; i < startingDay + amount; i++, currWeekday++)
-    {
-        result.push(
-            new DayOfCalendar(i, isOutOfMonthDays, currWeekday > 5)
-        );
-    }
-    return result;
+    if (month === MONTH_JANUARY)
+        year--;
+    let amountOfDaysInPreviousMonth = getAmountOfDaysInPreviousMonth(month);
+    month--;
+    dayIndex += amountOfDaysInPreviousMonth;
+    return new DayOfCalendar(dayIndex, month, year, weekday);
 }
 
-function addDaysFromPreviousMonth(year, month, weekday, day)
+function generateDayFromNextMonth(year, month, weekday, dayIndex, lastDayOfCurrentMonth)
 {
-    if (day > weekday)
-        return [];
-    let amountOfDaysToAdd = weekday - day;
-    let amountOfDaysInPrevMonth = getAmountOfDaysInPreviousMonth(month);
-    let firstDayOfWeek = amountOfDaysInPrevMonth - amountOfDaysToAdd + 1;
-    return addDays(amountOfDaysToAdd, firstDayOfWeek, weekday, true);
+    if (month === MONTH_DECEMBER)
+        year++;
+    dayIndex = dayIndex - lastDayOfCurrentMonth;
+    month++;
+    return new DayOfCalendar(dayIndex, month, year, weekday);
 }
 
-function addDaysFromCurrentMonth(year, month, weekday, day)
+function generateDay(year, month, weekday, dayIndex)
 {
-    let amountOfDaysInMonth = getAmountOfDaysInMonth(month);
-    if (day <= weekday)
-    {
-        return addDays(
-            7 - weekday + day,
-            1,
-            weekday - day - 1,
-            false
-        );
-    }
-    let amountOfDaysToAdd = amountOfDaysInMonth - (day - weekday);
-    if (amountOfDaysToAdd > 7)
-        amountOfDaysToAdd = 7;
-    return addDays(amountOfDaysToAdd, day - weekday + 1, weekday, false);
+    if (dayIndex <= 0)
+        return generateDayFromPreviousMonth(year, month, weekday, dayIndex);
+    let lastDayOfMonth = getAmountOfDaysInMonth(month);
+    if (dayIndex > lastDayOfMonth)
+        return generateDayFromNextMonth(year, month, weekday, dayIndex, lastDayOfMonth);
+    return new DayOfCalendar(dayIndex, month, year, weekday);
 }
 
-function addDaysFromNextMonth(year, month, weekday, day)
+function getFirstDayOfWeek(weekday, day)
 {
-    let amountOfDaysInCurrMonth = getAmountOfDaysInMonth(month);
-    let amountOfDaysToAdd = (day + (7 - weekday)) - amountOfDaysInCurrMonth;
-    if (amountOfDaysToAdd < 0)
-        return [];
-    return addDays(amountOfDaysToAdd, 1, 7 - amountOfDaysToAdd + 1, true);
+    return day - weekday + 1;
 }
-
 
 /**
  * Generates calendar content for the week containing the specified date.
@@ -81,15 +54,11 @@ function addDaysFromNextMonth(year, month, weekday, day)
  */
 export function generateWeeklyCalendar(year, month, day)
 {
+    let result = [];
     let weekday = getWeekday(year, month, day);
-    // console.log(
-    //     addDaysFromPreviousMonth(year, month, weekday, day),
-    //     addDaysFromCurrentMonth(year, month, weekday, day),
-    //     addDaysFromNextMonth(year, month, weekday, day)
-    // )
-    return [].concat(
-        addDaysFromPreviousMonth(year, month, weekday, day),
-        addDaysFromCurrentMonth(year, month, weekday, day),
-        addDaysFromNextMonth(year, month, weekday, day)
-    );
+    let firstDayOfWeek = getFirstDayOfWeek(weekday, day);
+    weekday = 1;
+    for (let i = firstDayOfWeek; i < firstDayOfWeek + 7; i++, weekday++)
+        result.push(generateDay(year, month, weekday, i));
+    return result;
 }
