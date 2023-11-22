@@ -4,12 +4,15 @@ import {getAmountOfDaysInMonth, getAmountOfDaysInPreviousMonth} from "~/Model/ge
 
 export function generateDayOfCalendar(year, month, weekday, dayIndex)
 {
-    while (dayIndex <= 0)
+    if (dayIndex <= 0)
     {
-        dayIndex += getAmountOfDaysInPreviousMonth(month);
-        if (month === MONTH_JANUARY)
-            year--;
-        month--;
+        while (dayIndex <= 0)
+        {
+            dayIndex += getAmountOfDaysInPreviousMonth(month);
+            if (month === MONTH_JANUARY)
+                year--;
+            month--;
+        }
         return new DayOfCalendar(dayIndex, month, year, weekday);
     }
     let lastDayOfCurrMonth = getAmountOfDaysInMonth(month);
@@ -17,8 +20,12 @@ export function generateDayOfCalendar(year, month, weekday, dayIndex)
     {
         dayIndex -= lastDayOfCurrMonth;
         if (month === MONTH_DECEMBER)
+        {
             year++;
-        month = (month + 1) % 12;
+            month = MONTH_JANUARY;
+        }
+        else
+            month++;
         lastDayOfCurrMonth = getAmountOfDaysInMonth(month);
     }
     return new DayOfCalendar(dayIndex, month, year, weekday)

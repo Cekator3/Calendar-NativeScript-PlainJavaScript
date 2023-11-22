@@ -1,4 +1,3 @@
-import {getAmountOfDaysInMonth, getAmountOfDaysInPreviousMonth} from "~/Model/getAmountOfDaysInMonth";
 import {DayOfCalendar} from "~/Model/DayOfCalendar";
 import {getWeekday} from "~/Model/WeekdayOfFirstDay";
 import {WEEKDAY_MONDAY} from "~/Model/WeekdaysConstants";
