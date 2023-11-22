@@ -1,4 +1,5 @@
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
+import {WEEKDAY_SATURDAY, WEEKDAY_SUNDAY} from "~/Model/WeekdaysConstants";
 
 /**
  * Represents a day of the week.
@@ -34,5 +35,14 @@ export class DayOfCalendar
         return (this.year === getUsersCurrentYear()) &&
                (this.month === getUsersCurrentMonth()) &&
                (this.day === getUsersCurrentDay());
+    }
+
+    /**
+     * Checks if the current day is a weekend day
+     * @return {boolean}
+     */
+    isWeekend()
+    {
+        return this.weekend >= WEEKDAY_SATURDAY;
     }
 }

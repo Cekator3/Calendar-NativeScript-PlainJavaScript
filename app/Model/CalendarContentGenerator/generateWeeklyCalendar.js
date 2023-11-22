@@ -1,43 +1,8 @@
-import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
+import {getAmountOfDaysInMonth, getAmountOfDaysInPreviousMonth} from "~/Model/getAmountOfDaysInMonth";
 import {DayOfCalendar} from "~/Model/DayOfCalendar";
 import {getWeekday} from "~/Model/WeekdayOfFirstDay";
-import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/MonthsConstants";
-
-function getAmountOfDaysInPreviousMonth(month)
-{
-    if (month === MONTH_JANUARY)
-        return getAmountOfDaysInMonth(MONTH_DECEMBER);
-    return getAmountOfDaysInMonth(month - 1);
-}
-
-function generateDayFromPreviousMonth(year, month, weekday, dayIndex)
-{
-    if (month === MONTH_JANUARY)
-        year--;
-    let amountOfDaysInPreviousMonth = getAmountOfDaysInPreviousMonth(month);
-    month--;
-    dayIndex += amountOfDaysInPreviousMonth;
-    return new DayOfCalendar(dayIndex, month, year, weekday);
-}
-
-function generateDayFromNextMonth(year, month, weekday, dayIndex, lastDayOfCurrentMonth)
-{
-    if (month === MONTH_DECEMBER)
-        year++;
-    dayIndex = dayIndex - lastDayOfCurrentMonth;
-    month++;
-    return new DayOfCalendar(dayIndex, month, year, weekday);
-}
-
-function generateDay(year, month, weekday, dayIndex)
-{
-    if (dayIndex <= 0)
-        return generateDayFromPreviousMonth(year, month, weekday, dayIndex);
-    let lastDayOfMonth = getAmountOfDaysInMonth(month);
-    if (dayIndex > lastDayOfMonth)
-        return generateDayFromNextMonth(year, month, weekday, dayIndex, lastDayOfMonth);
-    return new DayOfCalendar(dayIndex, month, year, weekday);
-}
+import {WEEKDAY_MONDAY} from "~/Model/WeekdaysConstants";
+import {generateDayOfCalendar} from "~/Model/CalendarContentGenerator/generateDayOfCalendar";
 
 function getFirstDayOfWeek(weekday, day)
 {
@@ -55,10 +20,9 @@ function getFirstDayOfWeek(weekday, day)
 export function generateWeeklyCalendar(year, month, day)
 {
     let result = [];
-    let weekday = getWeekday(year, month, day);
-    let firstDayOfWeek = getFirstDayOfWeek(weekday, day);
-    weekday = 1;
+    let weekday = WEEKDAY_MONDAY;
+    let firstDayOfWeek = getFirstDayOfWeek(getWeekday(year, month, day), day);
     for (let i = firstDayOfWeek; i < firstDayOfWeek + 7; i++, weekday++)
-        result.push(generateDay(year, month, weekday, i));
+        result.push(generateDayOfCalendar(year, month, weekday, i));
     return result;
 }
