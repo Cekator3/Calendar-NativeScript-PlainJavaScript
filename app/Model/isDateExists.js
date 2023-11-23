@@ -1,5 +1,6 @@
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
+import {WEEKDAY_MONDAY, WEEKDAY_SUNDAY} from "~/Model/Constants/WeekdaysConstants";
 
 /**
  * Checks if year exists
@@ -30,6 +31,16 @@ export function isMonthExists(month)
 export function isDayExists(month, day)
 {
     return (day > 0) && (day <= getAmountOfDaysInMonth(month));
+}
+
+/**
+ * Checks if a weekday exists.
+ * @param {number} weekday The weekday (0 - 7).
+ * @return {boolean}
+ */
+export function isWeekdayExists(weekday)
+{
+    return (weekday >= WEEKDAY_MONDAY) && (weekday <= WEEKDAY_SUNDAY);
 }
 
 /**

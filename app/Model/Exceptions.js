@@ -11,3 +11,13 @@ export class DateNotExistException extends Error
         this.day = day;
     }
 }
+
+export class WeekdayNotExistException extends Error
+{
+    weekday;
+    constructor(weekday)
+    {
+        super('Weekday "' + weekday + '" not exist');
+        this.weekday = weekday;
+    }
+}

@@ -5,7 +5,7 @@ import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generate
  * Generates calendar content for the year containing the specified date.
  * @param {number} year The year of the specified date.
  * @throws {DateNotExistException}
- * @returns {DayOfCalendar[]}
+ * @returns {CalendarDay[]}
  */
 export function generateYearlyCalendar(year)
 {

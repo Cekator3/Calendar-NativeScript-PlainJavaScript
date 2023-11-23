@@ -6,9 +6,9 @@
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
 import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
-import {isDateExists, isDayExists, isMonthExists, isWeekdayExists, isYearExists} from "~/Model/isDateExists";
 import {DateNotExistException, WeekdayNotExistException} from "~/Model/Exceptions";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
+import {getWeekday} from "~/Model/getWeekday";
 
 /**
  * A calendar day that is used to display the calendar.
@@ -31,17 +31,13 @@ export class CalendarDay
      * @throws {DateNotExistException}
      * @throws {WeekdayNotExistException}
      */
-    constructor(year, month, weekday, day)
+    constructor(year, month, day)
     {
-        //TODO remove exceptions when application is done.
-        if (!isWeekdayExists(weekday))
-            throw WeekdayNotExistException(weekday);
-        if (!isDateExists(year, month, day))
-            throw DateNotExistException(year, month, day);
         this.year = year;
         this.month = month;
-        this.weekday = weekday;
+        this.weekday = getWeekday(year, month, day);
         this.day = day;
+        this.#updateWeekday();
     }
 
     /**
@@ -80,6 +76,11 @@ export class CalendarDay
         return this.year;
     }
 
+    #updateWeekday()
+    {
+        this.weekday = getWeekday(this.year, this.month, this.day);
+    }
+
     /**
      * Sets the year of the calendar day.
      * @param {number} year
@@ -88,9 +89,8 @@ export class CalendarDay
      */
     setYear(year)
     {
-        if (!isYearExists(year))
-            throw new DateNotExistException(year, this.month, this.day);
         this.year = year;
+        this.#updateWeekday();
     }
 
     /**
@@ -101,9 +101,8 @@ export class CalendarDay
      */
     setMonth(month)
     {
-        if (!isMonthExists(month))
-            throw new DateNotExistException(this.year, month, this.day);
         this.month = month;
+        this.#updateWeekday();
     }
 
     /**
@@ -114,11 +113,9 @@ export class CalendarDay
      */
     setDay(day)
     {
-        if (!isDayExists(this.month, day))
-            throw new DateNotExistException(this.year, this.month, day);
         this.day = day;
+        this.#updateWeekday();
     }
-
 
     /**
      * Checks if that calendar day is user's today's date.
@@ -152,6 +149,7 @@ export class CalendarDay
         if (!Number.isInteger(this.year + value))
             this.year = Number.MAX_SAFE_INTEGER;
         this.year = this.year + value;
+        this.#updateWeekday();
     }
 
     /**
@@ -172,6 +170,7 @@ export class CalendarDay
             this.month += MONTH_DECEMBER;
             this.incrementYear(-1);
         }
+        this.#updateWeekday();
     }
 
     /**
@@ -181,19 +180,24 @@ export class CalendarDay
      */
     incrementDay(value = 1)
     {
+        console.log('value: ' + value);
         let amountOfDaysInMonth = getAmountOfDaysInMonth(this.month);
-        this.day += value;
-        while (this.day < 1)
+        let dayIndex = this.day + value;
+        console.log('day: ' + dayIndex);
+        while (dayIndex < 1)
         {
-            this.day += amountOfDaysInMonth;
             this.incrementMonth(-1);
             amountOfDaysInMonth = getAmountOfDaysInMonth(this.month);
+            dayIndex += amountOfDaysInMonth;
         }
-        while (this.day > amountOfDaysInMonth)
+        console.log('result: ' + dayIndex);
+        while (dayIndex > amountOfDaysInMonth)
         {
-            this.day -= amountOfDaysInMonth;
+            dayIndex -= amountOfDaysInMonth;
             this.incrementMonth(1);
             amountOfDaysInMonth = getAmountOfDaysInMonth(this.month);
         }
+        this.day = dayIndex;
+        this.#updateWeekday();
     }
 }
