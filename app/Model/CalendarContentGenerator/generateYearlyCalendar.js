@@ -1,10 +1,5 @@
-import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/MonthsConstants";
+import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
 import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generateMonthlyCalendar";
-
-function getLastDayOfMonth(indexOfFirstDay, amountOfDaysInMonth)
-{
-    return indexOfFirstDay + amountOfDaysInMonth - 1;
-}
 
 /**
  * Generates calendar content for the year containing the specified date.

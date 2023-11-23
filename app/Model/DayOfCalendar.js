@@ -1,5 +1,8 @@
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
-import {WEEKDAY_SATURDAY} from "~/Model/WeekdaysConstants";
+import {WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
+import {MONTH_DECEMBER} from "~/Model/Constants/MonthsConstants";
+
+const lol = new Date();
 
 /**
  * Represents a day of the week.

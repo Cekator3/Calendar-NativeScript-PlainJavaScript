@@ -1,20 +1,25 @@
-import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/MonthsConstants";
+import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
 import {DayOfCalendar} from "~/Model/DayOfCalendar";
 import {getAmountOfDaysInMonth, getAmountOfDaysInPreviousMonth} from "~/Model/getAmountOfDaysInMonth";
 
-export function generateDayOfCalendar(year, month, weekday, dayIndex)
+function generateDayFromPrevMonths(year, month, weekday, dayIndex)
 {
-    if (dayIndex <= 0)
+    while (dayIndex <= 0)
     {
-        while (dayIndex <= 0)
+        dayIndex += getAmountOfDaysInPreviousMonth(month);
+        if (month === MONTH_JANUARY)
         {
-            dayIndex += getAmountOfDaysInPreviousMonth(month);
-            if (month === MONTH_JANUARY)
-                year--;
-            month--;
+            year--;
+            month = MONTH_DECEMBER;
         }
-        return new DayOfCalendar(dayIndex, month, year, weekday);
+        else
+            month--;
     }
+    return new DayOfCalendar(dayIndex, month, year, weekday);
+}
+
+function generateDayFromCurrOrNextMonths(year, month, weekday, dayIndex)
+{
     let lastDayOfCurrMonth = getAmountOfDaysInMonth(month);
     while (dayIndex > lastDayOfCurrMonth)
     {
@@ -29,4 +34,22 @@ export function generateDayOfCalendar(year, month, weekday, dayIndex)
         lastDayOfCurrMonth = getAmountOfDaysInMonth(month);
     }
     return new DayOfCalendar(dayIndex, month, year, weekday)
+}
+
+/**
+ * Creates a calendar day.
+ *
+ * @param {number} year
+ * @param {number} month
+ * @param {number} weekday
+ * @param {number} dayIndex - The index of the day.
+ * If the index is <= 0, then the day is in one of the previous months.
+ * If the index is not in the range of the current month, then the day is in one of the next months.
+ * @return {DayOfCalendar}
+ */
+export function generateDayOfCalendar(year, month, weekday, dayIndex)
+{
+    if (dayIndex <= 0)
+        return generateDayFromPrevMonths(year, month, weekday, dayIndex);
+    return generateDayFromCurrOrNextMonths(year, month, weekday, dayIndex);
 }

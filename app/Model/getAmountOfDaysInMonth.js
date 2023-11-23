@@ -12,7 +12,7 @@ import {
     MONTH_NOVEMBER,
     MONTH_OCTOBER,
     MONTH_SEPTEMBER
-} from "~/Model/MonthsConstants";
+} from "~/Model/Constants/MonthsConstants";
 
 let months = new Map();
 initMonthsSet();
