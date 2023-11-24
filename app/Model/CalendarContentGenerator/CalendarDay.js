@@ -195,15 +195,16 @@ export class CalendarDay
     {
         let amountOfDaysInMonth = undefined;
         let dayIndex = this.day + value;
+        const MIN_AMOUNT_OF_DAYS_IN_MONTH = 28;
         while (dayIndex < 1)
         {
             this.incrementMonth(-1);
             amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
             dayIndex += amountOfDaysInMonth;
         }
-        if (amountOfDaysInMonth === undefined)
+        if ((amountOfDaysInMonth === undefined) && (dayIndex >= MIN_AMOUNT_OF_DAYS_IN_MONTH))
             amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
-        while (dayIndex > amountOfDaysInMonth)
+        while ((dayIndex > MIN_AMOUNT_OF_DAYS_IN_MONTH) && (dayIndex > amountOfDaysInMonth))
         {
             dayIndex -= amountOfDaysInMonth;
             this.incrementMonth(1);
