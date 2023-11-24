@@ -195,19 +195,32 @@ export class CalendarDay
     {
         let amountOfDaysInMonth = undefined;
         let dayIndex = this.day + value;
-        const MIN_AMOUNT_OF_DAYS_IN_MONTH = 28;
-        while (dayIndex < 1)
+        if (dayIndex < 1)
         {
-            this.incrementMonth(-1);
-            amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
-            dayIndex += amountOfDaysInMonth;
+            while (dayIndex < 1)
+            {
+                this.incrementMonth(-1);
+                amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
+                dayIndex += amountOfDaysInMonth;
+            }
+            this.day = dayIndex;
+            this.#isWeekdayUpToDate = false;
+            return;
         }
-        if ((amountOfDaysInMonth === undefined) && (dayIndex >= MIN_AMOUNT_OF_DAYS_IN_MONTH))
-            amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
-        while ((dayIndex > MIN_AMOUNT_OF_DAYS_IN_MONTH) && (dayIndex > amountOfDaysInMonth))
+        const MIN_AMOUNT_OF_DAYS_IN_MONTH = 28;
+        if (dayIndex < MIN_AMOUNT_OF_DAYS_IN_MONTH)
+        {
+            this.day = dayIndex;
+            this.#isWeekdayUpToDate = false;
+            return;
+        }
+        amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
+        while (dayIndex > amountOfDaysInMonth)
         {
             dayIndex -= amountOfDaysInMonth;
             this.incrementMonth(1);
+            if (dayIndex < MIN_AMOUNT_OF_DAYS_IN_MONTH)
+                break;
             amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
         }
         this.day = dayIndex;
