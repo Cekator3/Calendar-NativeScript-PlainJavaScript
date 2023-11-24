@@ -10,6 +10,7 @@ import {
 import {getWeekdaysNames} from "~/Model/Localization/WeekdayNames";
 import {RU} from "~/Model/Constants/LocalesConstants";
 import {getMonthName} from "~/Model/Localization/MonthsNames";
+import {WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
 
 const viewModel = new Observable();
 let calendarContent = undefined;
@@ -42,10 +43,10 @@ function isOutOfMonthDay(calendarDay)
            UserSelectedCalendarDateGetMonth() !== calendarDay.month;
 }
 
-function generateCSSclassesOfDay(calendarDay)
+function generateCSSclassesOfDay(calendarDay, col)
 {
     let cssClasses = [CALENDAR_CELL_CLASSES_DEFAULT];
-    if (calendarDay.isWeekend())
+    if (col >= (WEEKDAY_SATURDAY - 1))
         cssClasses.push(CALENDAR_CELL_CLASSES_WEEKEND);
     if (calendarDay.isToday())
         cssClasses.push(CALENDAR_CELL_CLASSES_TODAY);
@@ -62,7 +63,7 @@ function updateDisplayOfCalendarContent()
     let col = 0;
     for (let calendarDay of viewModel.get('items'))
     {
-        let cssClasses = generateCSSclassesOfDay(calendarDay);
+        let cssClasses = generateCSSclassesOfDay(calendarDay, col);
         createCalendarCell(calendarDay.day, row, col, cssClasses);
         col++;
         if (col === 7)

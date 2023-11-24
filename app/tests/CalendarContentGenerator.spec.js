@@ -9,6 +9,7 @@ import {generateYearlyCalendar} from "~/Model/CalendarContentGenerator/generateY
 //QUnit.test("Should generate calendar content for the month.", testGenerateMonthlyCalendar);
 //QUnit.test("Should generate calendar content for the year.", testGenerateYearlyCalendar);
 QUnit.test("Should generate calendar content for the month performance test.", testGenerateMonthlyCalendarPerformanceTest);
+QUnit.test("Should generate calendar content for the month isWeekend performance test.", testGenerateMonthlyCalendarIsWeekendPerformanceTest);
 
 function testGenerateWeeklyCalendar(assert)
 {
@@ -61,6 +62,37 @@ function testGenerateMonthlyCalendarPerformanceTest(assert)
     console.log('');
     console.log('Monthly calendar generator: Average execution time: ' +
                                         (totalExecutionTime / executedTimes) + 'ms.');
+    console.log('');
+    assert.true(true);
+}
+
+function testGenerateMonthlyCalendarIsWeekendPerformanceTest(assert)
+{
+    const year = getUsersCurrentYear();
+    let totalExecutionTime = 0;
+    let executedTimes = 0;
+    for (let i = 0; i < 500; i++)
+    {
+        for (let month = MONTH_JANUARY; month <= MONTH_DECEMBER; month++)
+        {
+            let amountOfDays = getAmountOfDaysInMonth(year, month);
+            for (let day = 1; day <= amountOfDays; day++)
+            {
+                let result = generateMonthlyCalendar(true, year, month);
+                for (let day of result)
+                {
+                    let start = new Date().getTime();
+                    day.isWeekend();
+                    let stop = new Date().getTime();
+                    totalExecutionTime += (stop - start);
+                    executedTimes++;
+                }
+            }
+        }
+    }
+    console.log('');
+    console.log('Is weekend: Average execution time: ' +
+        (totalExecutionTime / executedTimes) + 'ms.');
     console.log('');
     assert.true(true);
 }
