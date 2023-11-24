@@ -22,11 +22,11 @@ export function UserSelectedCalendarDateSet(year = undefined, month = undefined,
 {
     if ((year === undefined) && (month === undefined) && (day === undefined))
         return;
-    if (year = undefined)
+    if (year === undefined)
         year = selectedCalendarDate.getYear();
-    if (month = undefined)
+    if (month === undefined)
         month = selectedCalendarDate.getMonth();
-    if (day = undefined)
+    if (day === undefined)
         day = selectedCalendarDate.getDay();
     selectedCalendarDate = new CalendarDay(year, month, day);
 }

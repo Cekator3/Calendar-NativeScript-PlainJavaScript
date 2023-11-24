@@ -6,7 +6,7 @@ import {
     UserSelectedCalendarDateGetMonth,
     UserSelectedCalendarDateGetYear,
     UserSelectedCalendarDateIncrementMonth, UserSelectedCalendarDateSet
-} from "~/Model/UserSelectedCalendarDay";
+} from "~/Model/UserSelectedCalendarDate";
 
 const viewModel = new Observable();
 
