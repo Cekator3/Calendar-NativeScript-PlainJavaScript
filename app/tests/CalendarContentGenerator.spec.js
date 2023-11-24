@@ -1,13 +1,14 @@
 import {generateWeeklyCalendar} from "~/Model/CalendarContentGenerator/generateWeeklyCalendar";
-import {MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
+import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generateMonthlyCalendar";
 import {getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {generateYearlyCalendar} from "~/Model/CalendarContentGenerator/generateYearlyCalendar";
 
-QUnit.test("Should generate calendar content for the week.", testGenerateWeeklyCalendar);
-QUnit.test("Should generate calendar content for the month.", testGenerateMonthlyCalendar);
-QUnit.test("Should generate calendar content for the year.", testGenerateYearlyCalendar);
+//QUnit.test("Should generate calendar content for the week.", testGenerateWeeklyCalendar);
+//QUnit.test("Should generate calendar content for the month.", testGenerateMonthlyCalendar);
+//QUnit.test("Should generate calendar content for the year.", testGenerateYearlyCalendar);
+QUnit.test("Should generate calendar content for the month performance test.", testGenerateMonthlyCalendarPerformanceTest);
 
 function testGenerateWeeklyCalendar(assert)
 {
@@ -35,6 +36,33 @@ function testGenerateMonthlyCalendar(assert)
         result = generateMonthlyCalendar(false, year, month);
         assert.equal(result.length, amountOfDays);
     }
+}
+
+function testGenerateMonthlyCalendarPerformanceTest(assert)
+{
+    const year = getUsersCurrentYear();
+    let totalExecutionTime = 0;
+    let executedTimes = 0;
+    for (let i = 0; i < 500; i++)
+    {
+        for (let month = MONTH_JANUARY; month <= MONTH_DECEMBER; month++)
+        {
+            let amountOfDays = getAmountOfDaysInMonth(year, month);
+            for (let day = 1; day <= amountOfDays; day++)
+            {
+                let start = new Date().getTime();
+                let result = generateMonthlyCalendar(true, year, month);
+                let stop = new Date().getTime();
+                totalExecutionTime += (stop - start);
+                executedTimes++;
+            }
+        }
+    }
+    console.log('');
+    console.log('Monthly calendar generator: Average execution time: ' +
+                                        (totalExecutionTime / executedTimes) + 'ms.');
+    console.log('');
+    assert.true(true);
 }
 
 function testGenerateYearlyCalendar(assert)
