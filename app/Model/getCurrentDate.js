@@ -1,3 +1,6 @@
+/**
+ * @fileOverview Subsystem for obtaining data about the user's current day.
+ */
 let currentDate;
 let currentDay;
 let currentMonth;

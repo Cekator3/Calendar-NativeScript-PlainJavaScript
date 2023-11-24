@@ -8,11 +8,10 @@ import {WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
 import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
 import {DateNotExistException} from "~/Model/Exceptions";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
-import {getWeekday} from "~/Model/getWeekday";
+import {getWeekdayOfDate} from "~/Model/getWeekdayOfDate";
 
 /**
  * A calendar day that is used to display the calendar.
- * (Do not access fields directly please.)
  */
 export class CalendarDay
 {
@@ -33,7 +32,7 @@ export class CalendarDay
     {
         this.year = year;
         this.month = month;
-        this.weekday = getWeekday(year, month, day);
+        this.weekday = getWeekdayOfDate(year, month, day);
         this.day = day;
         this.#updateWeekday();
     }
@@ -76,7 +75,7 @@ export class CalendarDay
 
     #updateWeekday()
     {
-        this.weekday = getWeekday(this.year, this.month, this.day);
+        this.weekday = getWeekdayOfDate(this.year, this.month, this.day);
     }
 
     /**

@@ -1,4 +1,4 @@
-import {getWeekday} from "~/Model/getWeekday";
+import {getWeekdayOfDate} from "~/Model/getWeekdayOfDate";
 import {generateDayOfCalendar} from "~/Model/CalendarContentGenerator/generateDayOfCalendar";
 
 function getFirstDayOfWeek(weekday, day)
@@ -17,7 +17,7 @@ function getFirstDayOfWeek(weekday, day)
 export function generateWeeklyCalendar(year, month, day)
 {
     let result = [];
-    let firstDayOfWeek = getFirstDayOfWeek(getWeekday(year, month, day), day);
+    let firstDayOfWeek = getFirstDayOfWeek(getWeekdayOfDate(year, month, day), day);
     let lastDayOfWeek = firstDayOfWeek + 6;
     for (let i = firstDayOfWeek; i <= lastDayOfWeek; i++)
         result.push(generateDayOfCalendar(year, month, i));

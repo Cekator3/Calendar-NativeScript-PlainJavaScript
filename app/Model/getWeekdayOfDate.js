@@ -1,3 +1,6 @@
+/**
+ * @fileOverview A subsystem for determining the day of the week by date.
+ */
 import {isDateExists} from "~/Model/isDateExists";
 import {DateNotExistException} from "~/Model/Exceptions";
 
@@ -6,10 +9,10 @@ import {DateNotExistException} from "~/Model/Exceptions";
  * @param {number} year - The year of the date.
  * @param {number} month - The month of the date (0-11).
  * @param {number} day - The day of the date.
- * @returns {number | undefined} - The weekday index (1-7) of the date.
- * @throws {DateNotExistException} - If the date does not exist.
+ * @returns {number} - The weekday index (1-7) of the date.
+ * @throws {DateNotExistException}
  */
-export function getWeekday(year, month, day)
+export function getWeekdayOfDate(year, month, day)
 {
     if (!isDateExists(year, month, day))
         throw new DateNotExistException(year, month, day);

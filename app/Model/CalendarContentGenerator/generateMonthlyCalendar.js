@@ -1,4 +1,4 @@
-import {getWeekday} from "~/Model/getWeekday";
+import {getWeekdayOfDate} from "~/Model/getWeekdayOfDate";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {generateDayOfCalendar} from "~/Model/CalendarContentGenerator/generateDayOfCalendar";
 
@@ -13,7 +13,7 @@ function getIndexOfFirstDay(year, month, isIncludingOutOfMonthDays)
 {
     if (!isIncludingOutOfMonthDays)
         return 1;
-    return 2 - getWeekday(year, month, 1);
+    return 2 - getWeekdayOfDate(year, month, 1);
 }
 
 /**

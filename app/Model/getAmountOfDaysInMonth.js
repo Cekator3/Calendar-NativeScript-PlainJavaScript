@@ -1,3 +1,7 @@
+/**
+ * @fileOverview A subsystem for determining the number of days in a month.
+ */
+
 import {DateNotExistException} from "~/Model/Exceptions";
 import {
     MONTH_APRIL,

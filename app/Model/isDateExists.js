@@ -1,3 +1,6 @@
+/**
+ * @fileOverview A subsystem for checking the existence of a date.
+ */
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
 
