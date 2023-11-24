@@ -180,17 +180,14 @@ export class CalendarDay
      */
     incrementDay(value = 1)
     {
-        console.log('value: ' + value);
         let amountOfDaysInMonth = getAmountOfDaysInMonth(this.month);
         let dayIndex = this.day + value;
-        console.log('day: ' + dayIndex);
         while (dayIndex < 1)
         {
             this.incrementMonth(-1);
             amountOfDaysInMonth = getAmountOfDaysInMonth(this.month);
             dayIndex += amountOfDaysInMonth;
         }
-        console.log('result: ' + dayIndex);
         while (dayIndex > amountOfDaysInMonth)
         {
             dayIndex -= amountOfDaysInMonth;
