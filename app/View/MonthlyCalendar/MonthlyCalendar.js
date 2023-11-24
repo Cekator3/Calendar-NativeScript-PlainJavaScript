@@ -1,4 +1,4 @@
-import { createViewModel } from './calendar-view-model';
+import { createViewModel } from './MonthlyCalendar-view-model';
 
 export function onNavigatingTo(args)
 {

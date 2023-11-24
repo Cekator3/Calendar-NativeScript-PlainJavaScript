@@ -15,10 +15,10 @@ import {getWeekdayOfDate} from "~/Model/getWeekdayOfDate";
  */
 export class CalendarDay
 {
-    #day;
-    #month;
-    #year;
-    #weekday;
+    day;
+    month;
+    year;
+    weekday;
 
     /**
      * Creates a calendar day.

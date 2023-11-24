@@ -1,2 +1,1 @@
-<Frame defaultPage="View/calendar">
-</Frame>
+<Frame defaultPage="View/MonthlyCalendar/MonthlyCalendar"/>
