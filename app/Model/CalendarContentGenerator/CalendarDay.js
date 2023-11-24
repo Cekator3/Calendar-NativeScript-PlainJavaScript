@@ -9,6 +9,7 @@ import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
 import {DateNotExistException} from "~/Model/Exceptions";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {getWeekdayOfDate} from "~/Model/getWeekdayOfDate";
+import {isDateExists} from "~/Model/isDateExists";
 
 /**
  * A calendar day that is used to display the calendar.
@@ -19,6 +20,7 @@ export class CalendarDay
     #month;
     #year;
     #weekday;
+    #isWeekdayUpToDate;
 
     /**
      * Creates a calendar day.
@@ -26,14 +28,22 @@ export class CalendarDay
      * @param {number} month - The month of the year.
      * @param {number} year - The year.
      * @returns {CalendarDay}
-     * @throws {DateNotExistException}
      */
     constructor(year, month, day)
     {
         this.year = year;
         this.month = month;
         this.day = day;
-        this.#updateWeekday();
+        this.#isWeekdayUpToDate = false;
+    }
+
+    /**
+     * Checks if this calendar day contains a valid date.
+     * @return {boolean}
+     */
+    isDateValid()
+    {
+        return isDateExists(this.year, this.month, this.day);
     }
 
     /**
@@ -51,6 +61,11 @@ export class CalendarDay
      */
     getWeekday()
     {
+        if (!this.#isWeekdayUpToDate)
+        {
+            this.#isWeekdayUpToDate = true;
+            this.#updateWeekday();
+        }
         return this.weekday;
     }
 
@@ -80,37 +95,34 @@ export class CalendarDay
     /**
      * Sets the year of the calendar day.
      * @param {number} year
-     * @throws {DateNotExistException}
      * @returns {void}
      */
     setYear(year)
     {
         this.year = year;
-        this.#updateWeekday();
+        this.#isWeekdayUpToDate = false;
     }
 
     /**
      * Sets the month of the calendar day.
      * @param {number} month (0 - 11)
-     * @throws {DateNotExistException}
      * @returns {void}
      */
     setMonth(month)
     {
         this.month = month;
-        this.#updateWeekday();
+        this.#isWeekdayUpToDate = false;
     }
 
     /**
      * Sets the day of the calendar day.
      * @param {number} day
-     * @throws {DateNotExistException}
      * @returns {void}
      */
     setDay(day)
     {
         this.day = day;
-        this.#updateWeekday();
+        this.#isWeekdayUpToDate = false;
     }
 
     /**
@@ -130,6 +142,11 @@ export class CalendarDay
      */
     isWeekend()
     {
+        if (!this.#isWeekdayUpToDate)
+        {
+            this.#isWeekdayUpToDate = true;
+            this.#updateWeekday();
+        }
         return this.weekday >= WEEKDAY_SATURDAY;
     }
 
@@ -145,7 +162,7 @@ export class CalendarDay
         if (!Number.isInteger(this.year + value))
             this.year = Number.MAX_SAFE_INTEGER;
         this.year = this.year + value;
-        this.#updateWeekday();
+        this.#isWeekdayUpToDate = false;
     }
 
     /**
@@ -166,7 +183,7 @@ export class CalendarDay
             this.month += MONTH_DECEMBER + 1;
             this.incrementYear(-1);
         }
-        this.#updateWeekday();
+        this.#isWeekdayUpToDate = false;
     }
 
     /**
@@ -193,6 +210,6 @@ export class CalendarDay
             amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
         }
         this.day = dayIndex;
-        this.#updateWeekday();
+        this.#isWeekdayUpToDate = false;
     }
 }
