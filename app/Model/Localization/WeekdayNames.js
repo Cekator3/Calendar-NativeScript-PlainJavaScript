@@ -16,6 +16,6 @@ export function getWeekdaysNames(locale= RU)
         case RU:
             return ru;
         default:
-            throw new LocaleNotSupportedException();
+            throw new LocaleNotSupportedException(locale);
     }
 }

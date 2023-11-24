@@ -9,6 +9,7 @@ import {
 } from "~/Model/UserSelectedCalendarDate";
 import {getWeekdaysNames} from "~/Model/Localization/WeekdayNames";
 import {RU} from "~/Model/Constants/LocalesConstants";
+import {getMonthName} from "~/Model/Localization/MonthsNames";
 
 const viewModel = new Observable();
 let calendarContent = undefined;
@@ -78,6 +79,10 @@ function updateCalendarContent()
                                               UserSelectedCalendarDateGetYear(),
                                               UserSelectedCalendarDateGetMonth()
     );
+    let dateStr = getMonthName(UserSelectedCalendarDateGetMonth(), RU) +
+                        ' ' +
+                        UserSelectedCalendarDateGetYear();
+    viewModel.set('currentMonth', dateStr);
     updateDisplayOfCalendarContent();
 }
 

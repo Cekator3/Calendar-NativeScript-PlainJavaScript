@@ -1,10 +1,15 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="onNavigatingTo">
-    <ActionBar>
-        <FlexboxLayout>
-            <Button text="V"></Button>
+    <StackLayout class="body">
+        <FlexboxLayout class="header">
+            <Button class="fas" text="&#xf073;" tap="{{ displayUsersTodaysDate }}"/>
+            <Button class="fas" text="&#xf0c9;" />
         </FlexboxLayout>
-    </ActionBar>
-    <GridLayout id="calendarContent" columns="*, *, *, *, *, *, *" rows="*, 2*, 2*, 2*, 2*, 2*, 2*">
-    </GridLayout>
+        <FlexboxLayout class="header-date-picker">
+            <Button class="fas" text="&#xf060;" tap="{{ decrementMonth }}"/>
+            <Button text="{{ currentMonth }}" />
+            <Button class="fas" text="&#xf061;" tap="{{ incrementMonth }}"/>
+        </FlexboxLayout>
+        <GridLayout id="calendarContent" columns="*, *, *, *, *, *, *" rows="*, 2*, 2*, 2*, 2*, 2*, 2*" />
+    </StackLayout>
 </Page>
 

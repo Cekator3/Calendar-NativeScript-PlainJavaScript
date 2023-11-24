@@ -1,13 +1,38 @@
-GridLayout
+.body
+{
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.header
+{
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    height: 10%;
+    width: 100%;
+}
+
+.header Button
+{
+    font-size: 20;
+    color: hsl(0, 0%, 20%);
+}
+
+.header-date-picker
+{
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#calendarContent
 {
     width: 100%;
     text-align: center;
     font-size: 18;
-}
-
-GridLayout > [row="1"]
-{
-
+    height: 80%;
 }
 
 .weekend
