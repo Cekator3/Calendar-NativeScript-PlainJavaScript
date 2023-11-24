@@ -26,13 +26,14 @@ export function isMonthExists(month)
 
 /**
  * Checks if day of the month exists
- * @param {number} month The month of the date
- * @param {number} day The month of the date
+ * @param {number} year
+ * @param {number} month
+ * @param {number} day
  * @return {boolean}
  */
-export function isDayExists(month, day)
+export function isDayExists(year, month, day)
 {
-    return (day > 0) && (day <= getAmountOfDaysInMonth(month));
+    return (day > 0) && (day <= getAmountOfDaysInMonth(year, month));
 }
 
 /**
@@ -44,5 +45,5 @@ export function isDayExists(month, day)
  */
 export function isDateExists(year, month, day)
 {
-    return isYearExists(year) && isMonthExists(month) && isDayExists(month, day);
+    return isYearExists(year) && isMonthExists(month) && isDayExists(year, month, day);
 }

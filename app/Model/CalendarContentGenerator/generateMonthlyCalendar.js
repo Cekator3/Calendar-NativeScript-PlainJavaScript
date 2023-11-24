@@ -2,10 +2,10 @@ import {getWeekdayOfDate} from "~/Model/getWeekdayOfDate";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {generateDayOfCalendar} from "~/Model/CalendarContentGenerator/generateDayOfCalendar";
 
-function getIndexOfLastDay(month, isIncludingOutOfMonthDays, indexOfFirstDay)
+function getIndexOfLastDay(year, month, isIncludingOutOfMonthDays, indexOfFirstDay)
 {
     if (!isIncludingOutOfMonthDays)
-        return indexOfFirstDay + getAmountOfDaysInMonth(month) - 1;
+        return indexOfFirstDay + getAmountOfDaysInMonth(year, month) - 1;
     return indexOfFirstDay + 42 - 1;
 }
 
@@ -28,7 +28,8 @@ export function generateMonthlyCalendar(isIncludingOutOfMonthDays, year, month)
 {
     let result = [];
     let indexOfFirstDay = getIndexOfFirstDay(year, month, isIncludingOutOfMonthDays);
-    let indexOfLastDay = getIndexOfLastDay(month,
+    let indexOfLastDay = getIndexOfLastDay(year,
+                                           month,
                                            isIncludingOutOfMonthDays,
                                            indexOfFirstDay
     );

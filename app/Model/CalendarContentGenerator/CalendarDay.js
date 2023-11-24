@@ -15,10 +15,10 @@ import {getWeekdayOfDate} from "~/Model/getWeekdayOfDate";
  */
 export class CalendarDay
 {
-    day;
-    month;
-    year;
-    weekday;
+    #day;
+    #month;
+    #year;
+    #weekday;
 
     /**
      * Creates a calendar day.
@@ -32,7 +32,6 @@ export class CalendarDay
     {
         this.year = year;
         this.month = month;
-        this.weekday = getWeekdayOfDate(year, month, day);
         this.day = day;
         this.#updateWeekday();
     }
@@ -159,12 +158,12 @@ export class CalendarDay
         this.month += value;
         while (this.month > MONTH_DECEMBER)
         {
-            this.month -= MONTH_DECEMBER;
+            this.month -= MONTH_DECEMBER + 1;
             this.incrementYear(1);
         }
         while (this.month < MONTH_JANUARY)
         {
-            this.month += MONTH_DECEMBER;
+            this.month += MONTH_DECEMBER + 1;
             this.incrementYear(-1);
         }
         this.#updateWeekday();
@@ -177,19 +176,21 @@ export class CalendarDay
      */
     incrementDay(value = 1)
     {
-        let amountOfDaysInMonth = getAmountOfDaysInMonth(this.month);
+        let amountOfDaysInMonth = undefined;
         let dayIndex = this.day + value;
         while (dayIndex < 1)
         {
             this.incrementMonth(-1);
-            amountOfDaysInMonth = getAmountOfDaysInMonth(this.month);
+            amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
             dayIndex += amountOfDaysInMonth;
         }
+        if (amountOfDaysInMonth === undefined)
+            amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
         while (dayIndex > amountOfDaysInMonth)
         {
             dayIndex -= amountOfDaysInMonth;
             this.incrementMonth(1);
-            amountOfDaysInMonth = getAmountOfDaysInMonth(this.month);
+            amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
         }
         this.day = dayIndex;
         this.#updateWeekday();

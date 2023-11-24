@@ -13,7 +13,7 @@ function testGenerateWeeklyCalendar(assert)
 {
     const year = getUsersCurrentYear();
     const month = getUsersCurrentMonth();
-    let amountOfDays = getAmountOfDaysInMonth(month);
+    let amountOfDays = getAmountOfDaysInMonth(year, month);
     let days = [1, amountOfDays / 2, amountOfDays];
     for (let day of days)
     {
@@ -26,7 +26,7 @@ function testGenerateMonthlyCalendar(assert)
 {
     const year = getUsersCurrentYear();
     const month = getUsersCurrentMonth();
-    let amountOfDays = getAmountOfDaysInMonth(month);
+    let amountOfDays = getAmountOfDaysInMonth(year, month);
     let days = [1, amountOfDays / 2, amountOfDays];
     for (let day of days)
     {
@@ -44,7 +44,7 @@ function testGenerateYearlyCalendar(assert)
     let monthNumber = MONTH_JANUARY;
     for (let month of result)
     {
-        assert.equal(month.length, getAmountOfDaysInMonth(monthNumber))
+        assert.equal(month.length, getAmountOfDaysInMonth(year, monthNumber))
         monthNumber++;
     }
 }
