@@ -46,16 +46,3 @@ export function getAmountOfDaysInMonth(month)
         throw new DateNotExistException(month);
     return result;
 }
-
-/**
- * Returns the number of days in the previous month.
- *
- * @param {number} month - The current month.
- * @returns {number} - The number of days in the previous month.
- */
-export function getAmountOfDaysInPreviousMonth(month)
-{
-    if (month === MONTH_JANUARY)
-        return getAmountOfDaysInMonth(MONTH_DECEMBER);
-    return getAmountOfDaysInMonth(month - 1);
-}

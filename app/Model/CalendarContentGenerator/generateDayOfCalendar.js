@@ -2,7 +2,6 @@ import {CalendarDay} from "~/Model/CalendarContentGenerator/CalendarDay";
 
 /**
  * Creates a calendar day.
- *
  * @param {number} year
  * @param {number} month
  * @param {number} dayIndex - The index of the day.

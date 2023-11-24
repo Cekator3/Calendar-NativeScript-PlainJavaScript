@@ -1,6 +1,4 @@
-import {DayOfCalendar} from "~/Model/CalendarContentGenerator/CalendarDay";
 import {getWeekday} from "~/Model/getWeekday";
-import {WEEKDAY_MONDAY} from "~/Model/Constants/WeekdaysConstants";
 import {generateDayOfCalendar} from "~/Model/CalendarContentGenerator/generateDayOfCalendar";
 
 function getFirstDayOfWeek(weekday, day)

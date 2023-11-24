@@ -6,7 +6,7 @@
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
 import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
-import {DateNotExistException, WeekdayNotExistException} from "~/Model/Exceptions";
+import {DateNotExistException} from "~/Model/Exceptions";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {getWeekday} from "~/Model/getWeekday";
 
@@ -25,11 +25,9 @@ export class CalendarDay
      * Creates a calendar day.
      * @param {number} day - The day of the month.
      * @param {number} month - The month of the year.
-     * @param {number} weekday - The weekday of the date (0 - Monday, 7 - Sunday).
      * @param {number} year - The year.
      * @returns {CalendarDay}
      * @throws {DateNotExistException}
-     * @throws {WeekdayNotExistException}
      */
     constructor(year, month, day)
     {
