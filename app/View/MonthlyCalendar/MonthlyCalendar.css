@@ -1,0 +1,26 @@
+GridLayout
+{
+    width: 100%;
+    text-align: center;
+    font-size: 18;
+}
+
+GridLayout > [row="1"]
+{
+
+}
+
+.weekend
+{
+    color: red;
+}
+
+.out-of-month
+{
+    color: hsla(0, 50%, 0%, 0.5);
+}
+
+.weekend.out-of-month
+{
+    color: hsla(0, 100%, 50%, 0.5);
+}

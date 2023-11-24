@@ -1,6 +1,10 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="onNavigatingTo">
-    <ActionBar title="My App" icon="" />
-    <GridLayout id="calendarContent">
-
+    <ActionBar>
+        <FlexboxLayout>
+            <Button text="V"></Button>
+        </FlexboxLayout>
+    </ActionBar>
+    <GridLayout id="calendarContent" columns="*, *, *, *, *, *, *" rows="*, 2*, 2*, 2*, 2*, 2*, 2*">
     </GridLayout>
 </Page>
+
