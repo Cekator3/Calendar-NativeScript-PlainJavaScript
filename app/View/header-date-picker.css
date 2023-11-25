@@ -1,0 +1,35 @@
+.header-date-picker
+{
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 100%;
+    height: 10%;
+}
+
+.header-date-picker .dateSwitcher
+{
+    font-size: 25;
+    border-width: 1;
+    z-index: 0;
+    width: 90%;
+}
+
+.header-date-picker .dateSwitcher:highlighted
+{
+    background-color: hsl(189, 0%, 68%);
+}
+
+.header-date-picker .dateIncrementer
+{
+    font-size: 20;
+    border-width: 1;
+    border-radius: 50% 50% 50% 50%;
+    z-index: 0;
+    width: 10%;
+    padding: 10;
+}
+
+.header-date-picker .dateIncrementer:highlighted
+{
+    background-color: hsl(189, 0%, 68%);
+}

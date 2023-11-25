@@ -1,0 +1,11 @@
+.body
+{
+    flex-flow: column;
+    justify-content: center;
+}
+
+.control-panel
+{
+    flex-flow: row nowrap;
+    justify-content: center;
+}

@@ -1,4 +1,4 @@
-import {GridLayout, Label, Observable} from '@nativescript/core'
+import {Frame, GridLayout, Label, Observable} from '@nativescript/core'
 import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generateMonthlyCalendar";
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {
@@ -161,11 +161,23 @@ function switchCalendarToCurrentDate()
     updateCalendar();
 }
 
+function showDateSwitcher()
+{
+    calendarContent.removeChildren();
+    Frame.topmost().navigate({
+        moduleName: '/View/DateSwitcher/DateSwitcher',
+        context: {
+            previousPagePath: '/View/MonthlyCalendar/MonthlyCalendar'
+        }
+    });
+}
+
 export function createViewModel(args)
 {
     viewModel.incrementMonth = incrementMonth;
     viewModel.decrementMonth = decrementMonth;
     viewModel.switchToCurrentDate = switchCalendarToCurrentDate;
+    viewModel.showDateSwitcher = showDateSwitcher;
     calendarContent = args.getViewById('calendarContent');
     updateCalendar();
     return viewModel;
