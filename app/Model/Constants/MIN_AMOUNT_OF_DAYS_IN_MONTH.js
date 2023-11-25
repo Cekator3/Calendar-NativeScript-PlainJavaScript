@@ -1,0 +1,1 @@
+export const MIN_AMOUNT_OF_DAYS_IN_MONTH = 28;

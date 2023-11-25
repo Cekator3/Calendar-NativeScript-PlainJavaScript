@@ -3,6 +3,7 @@
  */
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
+import {MIN_AMOUNT_OF_DAYS_IN_MONTH} from "~/Model/Constants/MIN_AMOUNT_OF_DAYS_IN_MONTH";
 
 /**
  * Checks if year exists
@@ -33,7 +34,8 @@ export function isMonthExists(month)
  */
 export function isDayExists(year, month, day)
 {
-    return (day > 0) && (day <= getAmountOfDaysInMonth(year, month));
+    return (day > 0) && ((day <= MIN_AMOUNT_OF_DAYS_IN_MONTH) ||
+                         (day <= getAmountOfDaysInMonth(year, month)));
 }
 
 /**

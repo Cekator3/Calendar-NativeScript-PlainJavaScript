@@ -44,7 +44,7 @@ function testGenerateMonthlyCalendarPerformanceTest(assert)
     const year = getUsersCurrentYear();
     let totalExecutionTime = 0;
     let executedTimes = 0;
-    for (let i = 0; i < 500; i++)
+    for (let i = 0; i < 1000; i++)
     {
         for (let month = MONTH_JANUARY; month <= MONTH_DECEMBER; month++)
         {
@@ -71,7 +71,7 @@ function testGenerateMonthlyCalendarIsWeekendPerformanceTest(assert)
     const year = getUsersCurrentYear();
     let totalExecutionTime = 0;
     let executedTimes = 0;
-    for (let i = 0; i < 500; i++)
+    for (let i = 0; i < 1000; i++)
     {
         for (let month = MONTH_JANUARY; month <= MONTH_DECEMBER; month++)
         {

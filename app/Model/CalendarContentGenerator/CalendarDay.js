@@ -6,10 +6,10 @@
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
 import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
-import {DateNotExistException} from "~/Model/Exceptions";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {getWeekdayOfDate} from "~/Model/getWeekdayOfDate";
 import {isDateExists} from "~/Model/isDateExists";
+import {MIN_AMOUNT_OF_DAYS_IN_MONTH} from "~/Model/Constants/MIN_AMOUNT_OF_DAYS_IN_MONTH";
 
 /**
  * A calendar day that is used to display the calendar.
@@ -90,6 +90,26 @@ export class CalendarDay
     #updateWeekday()
     {
         this.weekday = getWeekdayOfDate(this.year, this.month, this.day);
+    }
+
+    /**
+     * Sets the date of the calendar day.
+     * @param {number} year
+     * @param {number} month
+     * @param {number} day
+     * @returns {void}
+     */
+    setDate(year = undefined, month = undefined, day = undefined)
+    {
+        if (year !== undefined)
+            this.year = year;
+        if (month !== undefined)
+            this.month = month;
+        if (day !== undefined)
+            this.day = day;
+        this.#isWeekdayUpToDate = (year === undefined) &&
+                                  (month === undefined) &&
+                                  (day === undefined);
     }
 
     /**
@@ -207,7 +227,6 @@ export class CalendarDay
             this.#isWeekdayUpToDate = false;
             return;
         }
-        const MIN_AMOUNT_OF_DAYS_IN_MONTH = 28;
         if (dayIndex < MIN_AMOUNT_OF_DAYS_IN_MONTH)
         {
             this.day = dayIndex;
