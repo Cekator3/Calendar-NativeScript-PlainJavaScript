@@ -5,9 +5,8 @@ import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generate
 import {getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {generateYearlyCalendar} from "~/Model/CalendarContentGenerator/generateYearlyCalendar";
 
-//QUnit.test("Should generate calendar content for the week.", testGenerateWeeklyCalendar);
-//QUnit.test("Should generate calendar content for the month.", testGenerateMonthlyCalendar);
-//QUnit.test("Should generate calendar content for the year.", testGenerateYearlyCalendar);
+QUnit.test("Should generate calendar content for the week.", testGenerateWeeklyCalendar);
+QUnit.test("Should generate calendar content for the month.", testGenerateMonthlyCalendar);
 QUnit.test("Should generate calendar content for the month performance test.", testGenerateMonthlyCalendarPerformanceTest);
 QUnit.test("Should generate calendar content for the month isWeekend performance test.", testGenerateMonthlyCalendarIsWeekendPerformanceTest);
 
@@ -95,16 +94,4 @@ function testGenerateMonthlyCalendarIsWeekendPerformanceTest(assert)
         (totalExecutionTime / executedTimes) + 'ms.');
     console.log('');
     assert.true(true);
-}
-
-function testGenerateYearlyCalendar(assert)
-{
-    const year = getUsersCurrentYear();
-    let result = generateYearlyCalendar(year);
-    let monthNumber = MONTH_JANUARY;
-    for (let month of result)
-    {
-        assert.equal(month.length, getAmountOfDaysInMonth(year, monthNumber))
-        monthNumber++;
-    }
 }

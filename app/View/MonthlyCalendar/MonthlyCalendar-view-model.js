@@ -44,8 +44,8 @@ function updateCalendarHeaderCells()
 
 function isOutOfMonthDay(calendarDay)
 {
-    return UserSelectedCalendarDateGetYear() !== calendarDay.year ||
-           UserSelectedCalendarDateGetMonth() !== calendarDay.month;
+    return UserSelectedCalendarDateGetYear() !== calendarDay.getYear() ||
+           UserSelectedCalendarDateGetMonth() !== calendarDay.getMonth();
 }
 
 function generateCSSclassesOfDay(calendarDay, col)
@@ -71,7 +71,7 @@ function getCalendarCells()
     for (let calendarDay of viewModel.get('items'))
     {
         let cssClasses = generateCSSclassesOfDay(calendarDay, col);
-        calendarCells.push(createCalendarCell(calendarDay.day, cssClasses));
+        calendarCells.push(createCalendarCell(calendarDay.getDay(), cssClasses));
         col++;
         if (col === 7)
         {

@@ -8,7 +8,7 @@ import {WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
 import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {getWeekdayOfDate} from "~/Model/getWeekdayOfDate";
-import {isDateExists, isMonthExists, isYearExists} from "~/Model/isDateExists";
+import {isMonthExists} from "~/Model/isDateExists";
 import {MIN_AMOUNT_OF_DAYS_IN_MONTH} from "~/Model/Constants/MIN_AMOUNT_OF_DAYS_IN_MONTH";
 
 /**
@@ -20,7 +20,7 @@ export class CalendarDay
     #month;
     #year;
     #weekday;
-    #isWeekdayUpToDate;
+    #isWeekdayUpToDate = false;
 
     /**
      * Creates a calendar day.
@@ -42,7 +42,7 @@ export class CalendarDay
      */
     getDay()
     {
-        return this.day;
+        return this.#day;
     }
 
     /**
@@ -56,7 +56,7 @@ export class CalendarDay
             this.#isWeekdayUpToDate = true;
             this.#updateWeekday();
         }
-        return this.weekday;
+        return this.#weekday;
     }
 
     /**
@@ -65,7 +65,7 @@ export class CalendarDay
      */
     getMonth()
     {
-        return this.month;
+        return this.#month;
     }
 
     /**
@@ -74,12 +74,12 @@ export class CalendarDay
      */
     getYear()
     {
-        return this.year;
+        return this.#year;
     }
 
     #updateWeekday()
     {
-        this.weekday = getWeekdayOfDate(this.getYear(), this.getMonth(), this.getDay());
+        this.#weekday = getWeekdayOfDate(this.getYear(), this.getMonth(), this.getDay());
     }
 
     /**
@@ -90,12 +90,12 @@ export class CalendarDay
     setYear(year)
     {
         if (year < 1)
-            this.year = 1;
+            year = 1;
         else if (year > Number.MAX_SAFE_INTEGER)
-            this.year = Number.MAX_SAFE_INTEGER;
-        if (this.year === year)
+            year = Number.MAX_SAFE_INTEGER;
+        if (this.#year === year)
             return;
-        this.year = year;
+        this.#year = year;
         this.#isWeekdayUpToDate = false;
     }
 
@@ -108,13 +108,26 @@ export class CalendarDay
     {
         if (isMonthExists(month))
         {
-            if (this.month === month)
-                return;
-            this.month = month;
+            if (this.#month === month)
+                return
+            this.#month = month;
             this.#isWeekdayUpToDate = false;
+            return;
         }
-        this.month = month - 1;
-        this.incrementMonth(1);
+        let yearsToIncrement = 0;
+        while (month > MONTH_DECEMBER)
+        {
+            month -= (MONTH_DECEMBER - 1);
+            yearsToIncrement++;
+        }
+        while (month < MONTH_JANUARY)
+        {
+            month += (MONTH_DECEMBER + 1);
+            yearsToIncrement--;
+        }
+        this.incrementYear(yearsToIncrement);
+        this.#month = month;
+        this.#isWeekdayUpToDate = false;
     }
 
     /**
@@ -124,10 +137,34 @@ export class CalendarDay
      */
     setDay(day)
     {
-        if (this.day === day)
+        if (this.#day === day)
             return;
-        this.day = day - 1;
-        this.incrementDay(1);
+        this.#isWeekdayUpToDate = false;
+        if ((day >= 1) && (day <= MIN_AMOUNT_OF_DAYS_IN_MONTH))
+        {
+            this.#day = day;
+            return;
+        }
+        if (day < 1)
+        {
+            while (day < 1)
+            {
+                this.incrementMonth(-1);
+                day += getAmountOfDaysInMonth(this.#year, this.#month);
+            }
+            this.#day = day;
+            return;
+        }
+        let amountOfDaysInMonth = getAmountOfDaysInMonth(this.#year, this.#month);
+        while (day > amountOfDaysInMonth)
+        {
+            day -= amountOfDaysInMonth;
+            this.incrementMonth(1);
+            if (day <= MIN_AMOUNT_OF_DAYS_IN_MONTH)
+                break;
+            amountOfDaysInMonth = getAmountOfDaysInMonth(this.#year, this.#month);
+        }
+        this.#day = day;
     }
 
     /**
@@ -136,9 +173,9 @@ export class CalendarDay
      */
     isToday()
     {
-        return (this.year === getUsersCurrentYear()) &&
-               (this.month === getUsersCurrentMonth()) &&
-               (this.day === getUsersCurrentDay());
+        return (this.#year === getUsersCurrentYear()) &&
+               (this.#month === getUsersCurrentMonth()) &&
+               (this.#day === getUsersCurrentDay());
     }
 
     /**
@@ -152,7 +189,7 @@ export class CalendarDay
             this.#isWeekdayUpToDate = true;
             this.#updateWeekday();
         }
-        return this.weekday >= WEEKDAY_SATURDAY;
+        return this.#weekday >= WEEKDAY_SATURDAY;
     }
 
     /**
@@ -162,7 +199,7 @@ export class CalendarDay
      */
     incrementYear(value = 1)
     {
-        this.setYear(this.year + value);
+        this.setYear(this.#year + value);
     }
 
     /**
@@ -172,20 +209,7 @@ export class CalendarDay
      */
     incrementMonth(value = 1)
     {
-        if (value === 0)
-            return;
-        this.#isWeekdayUpToDate = false;
-        this.month += value;
-        while (this.month > MONTH_DECEMBER)
-        {
-            this.month -= MONTH_DECEMBER + 1;
-            this.incrementYear(1);
-        }
-        while (this.month < MONTH_JANUARY)
-        {
-            this.month += MONTH_DECEMBER + 1;
-            this.incrementYear(-1);
-        }
+        this.setMonth(this.#month + value);
     }
 
     /**
@@ -195,36 +219,6 @@ export class CalendarDay
      */
     incrementDay(value = 1)
     {
-        if (value === 0)
-            return;
-        this.#isWeekdayUpToDate = false;
-        let amountOfDaysInMonth = undefined;
-        let dayIndex = this.day + value;
-        if (dayIndex < 1)
-        {
-            while (dayIndex < 1)
-            {
-                this.incrementMonth(-1);
-                amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
-                dayIndex += amountOfDaysInMonth;
-            }
-            this.day = dayIndex;
-            return;
-        }
-        if (dayIndex < MIN_AMOUNT_OF_DAYS_IN_MONTH)
-        {
-            this.day = dayIndex;
-            return;
-        }
-        amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
-        while (dayIndex > amountOfDaysInMonth)
-        {
-            dayIndex -= amountOfDaysInMonth;
-            this.incrementMonth(1);
-            if (dayIndex < MIN_AMOUNT_OF_DAYS_IN_MONTH)
-                break;
-            amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
-        }
-        this.day = dayIndex;
+        this.setDay(this.#day + value);
     }
 }
