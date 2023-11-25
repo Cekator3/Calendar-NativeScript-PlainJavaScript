@@ -92,13 +92,12 @@ function updateDisplayOfCalendarContent()
     let stop = new Date().getTime();
     console.log('removeChildren: ' + (stop - start) + 'ms');
     start = new Date().getTime();
-    for (let cell of cells)
-        calendarContent.addChild(cell);
     let i = 0;
     for (let row = 0; row < 7; row++)
     {
         for (let col = 0; col < 7; col++)
         {
+            calendarContent.addChild(cells[i]);
             GridLayout.setRow(cells[i], row);
             GridLayout.setColumn(cells[i], col);
             i++;
