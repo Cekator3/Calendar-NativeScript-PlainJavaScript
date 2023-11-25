@@ -81,6 +81,7 @@ export class CalendarDay
     #updateWeekday()
     {
         this.#weekday = getWeekdayOfDate(this.#year, this.#month, this.#day);
+        this.#isWeekdayUpToDate = true;
     }
 
     /**
@@ -185,10 +186,7 @@ export class CalendarDay
     isWeekend()
     {
         if (!this.#isWeekdayUpToDate)
-        {
-            this.#isWeekdayUpToDate = true;
             this.#updateWeekday();
-        }
         return this.#weekday >= WEEKDAY_SATURDAY;
     }
 
