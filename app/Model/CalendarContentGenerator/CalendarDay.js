@@ -32,8 +32,8 @@ export class CalendarDay
     constructor(year, month, day)
     {
         this.setYear(year);
-        this.setYear(month);
-        this.setYear(day);
+        this.setMonth(month);
+        this.setDay(day);
     }
 
     /**
@@ -214,13 +214,11 @@ export class CalendarDay
                 dayIndex += amountOfDaysInMonth;
             }
             this.day = dayIndex;
-            this.#isWeekdayUpToDate = false;
             return;
         }
         if (dayIndex < MIN_AMOUNT_OF_DAYS_IN_MONTH)
         {
             this.day = dayIndex;
-            this.#isWeekdayUpToDate = false;
             return;
         }
         amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);

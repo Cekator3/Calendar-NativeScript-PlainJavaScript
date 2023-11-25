@@ -11,7 +11,6 @@ function getFirstDayOfWeek(weekday, day)
  * @param {number} year
  * @param {number} month
  * @param {number} day
- * @throws {DateNotExistException}
  * @returns {CalendarDay[]}
  */
 export function generateWeeklyCalendar(year, month, day)

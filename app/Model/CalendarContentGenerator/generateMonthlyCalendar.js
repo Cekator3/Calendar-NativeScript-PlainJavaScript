@@ -21,7 +21,6 @@ function getIndexOfFirstDay(year, month, isIncludingOutOfMonthDays)
  * @param {boolean} isIncludingOutOfMonthDays Is out-of-month days must be included.
  * @param {number} year
  * @param {number} month
- * @throws {DateNotExistException}
  * @returns {CalendarDay[]}
  */
 export function generateMonthlyCalendar(isIncludingOutOfMonthDays, year, month)

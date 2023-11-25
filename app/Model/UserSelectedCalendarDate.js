@@ -16,19 +16,15 @@ let selectedCalendarDate = new CalendarDay(getUsersCurrentYear(),
  * @param {number} month The month of the date (0-11)
  * @param {number} day
  * @returns {void}
- * @throws {DateNotExistException}
  */
 export function UserSelectedCalendarDateSet(year = undefined, month = undefined, day = undefined)
 {
-    if ((year === undefined) && (month === undefined) && (day === undefined))
-        return;
-    if (year === undefined)
-        year = selectedCalendarDate.getYear();
-    if (month === undefined)
-        month = selectedCalendarDate.getMonth();
-    if (day === undefined)
-        day = selectedCalendarDate.getDay();
-    selectedCalendarDate = new CalendarDay(year, month, day);
+    if (year !== undefined)
+        selectedCalendarDate.setYear(year);
+    if (month !== undefined)
+        selectedCalendarDate.setMonth(month);
+    if (day !== undefined)
+        selectedCalendarDate.setYear(day);
 }
 
 /**
