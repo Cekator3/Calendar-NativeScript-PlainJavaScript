@@ -24,9 +24,9 @@ export class CalendarDay
 
     /**
      * Creates a calendar day.
-     * @param {number} day - The day of the month.
-     * @param {number} month - The month of the year.
-     * @param {number} year - The year.
+     * @param {number} day
+     * @param {number} month - The month (0-11).
+     * @param {number} year
      * @returns {CalendarDay}
      */
     constructor(year, month, day)
@@ -111,11 +111,13 @@ export class CalendarDay
         if (this.#month === month)
             return;
         this.#isWeekdayUpToDate = false;
+        // Check if the month can be directly set.
         if (isMonthExists(month))
         {
             this.#month = month;
             return;
         }
+        // Normalize the month by incrementing or decrementing the year.
         let yearsToIncrement = 0;
         while (month > MONTH_DECEMBER)
         {
@@ -141,11 +143,13 @@ export class CalendarDay
         if (this.#day === day)
             return;
         this.#isWeekdayUpToDate = false;
+        // Check if the day can be safely directly set.
         if ((day >= 1) && (day <= MIN_AMOUNT_OF_DAYS_IN_MONTH))
         {
             this.#day = day;
             return;
         }
+        // If needed, normalize the day by decrementing the month.
         if (day < 1)
         {
             while (day < 1)
@@ -156,6 +160,7 @@ export class CalendarDay
             this.#day = day;
             return;
         }
+        // If needed, normalize the day by incrementing the month.
         let amountOfDaysInMonth = getAmountOfDaysInMonth(this.#year, this.#month);
         while (day > amountOfDaysInMonth)
         {
