@@ -31,9 +31,12 @@ export class CalendarDay
      */
     constructor(year, month, day)
     {
-        this.year = year;
-        this.month = month;
-        this.day = day;
+        this.year = year - 1;
+        this.month = month - 1;
+        this.day = day - 1;
+        this.incrementYear(1);
+        this.incrementMonth(1);
+        this.incrementDay(1);
         this.#isWeekdayUpToDate = false;
     }
 
@@ -102,11 +105,11 @@ export class CalendarDay
     setDate(year = undefined, month = undefined, day = undefined)
     {
         if (year !== undefined)
-            this.year = year;
+            this.setYear(year);
         if (month !== undefined)
-            this.month = month;
+            this.setMonth(month);
         if (day !== undefined)
-            this.day = day;
+            this.setDay(day);
         this.#isWeekdayUpToDate = (year === undefined) &&
                                   (month === undefined) &&
                                   (day === undefined);
@@ -119,7 +122,8 @@ export class CalendarDay
      */
     setYear(year)
     {
-        this.year = year;
+        this.year = year - 1;
+        this.incrementYear(1);
         this.#isWeekdayUpToDate = false;
     }
 
@@ -130,7 +134,8 @@ export class CalendarDay
      */
     setMonth(month)
     {
-        this.month = month;
+        this.month = month - 1;
+        this.incrementMonth(1);
         this.#isWeekdayUpToDate = false;
     }
 
@@ -141,7 +146,8 @@ export class CalendarDay
      */
     setDay(day)
     {
-        this.day = day;
+        this.day = day - 1;
+        this.incrementDay(1);
         this.#isWeekdayUpToDate = false;
     }
 
@@ -177,12 +183,15 @@ export class CalendarDay
      */
     incrementYear(value = 1)
     {
+        if (value === 0)
+            return;
+        this.#isWeekdayUpToDate = false;
         if (this.year + value < 1)
             this.year = 1;
-        if (!Number.isInteger(this.year + value))
+        else if (!Number.isInteger(this.year + value))
             this.year = Number.MAX_SAFE_INTEGER;
-        this.year = this.year + value;
-        this.#isWeekdayUpToDate = false;
+        else
+            this.year = this.year + value;
     }
 
     /**
@@ -192,6 +201,9 @@ export class CalendarDay
      */
     incrementMonth(value = 1)
     {
+        if (value === 0)
+            return;
+        this.#isWeekdayUpToDate = false;
         this.month += value;
         while (this.month > MONTH_DECEMBER)
         {
@@ -203,7 +215,6 @@ export class CalendarDay
             this.month += MONTH_DECEMBER + 1;
             this.incrementYear(-1);
         }
-        this.#isWeekdayUpToDate = false;
     }
 
     /**
@@ -213,6 +224,9 @@ export class CalendarDay
      */
     incrementDay(value = 1)
     {
+        if (value === 0)
+            return;
+        this.#isWeekdayUpToDate = false;
         let amountOfDaysInMonth = undefined;
         let dayIndex = this.day + value;
         if (dayIndex < 1)
@@ -243,6 +257,5 @@ export class CalendarDay
             amountOfDaysInMonth = getAmountOfDaysInMonth(this.year, this.month);
         }
         this.day = dayIndex;
-        this.#isWeekdayUpToDate = false;
     }
 }

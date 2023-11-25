@@ -13,6 +13,5 @@ import {CalendarDay} from "~/Model/CalendarContentGenerator/CalendarDay";
 export function generateDayOfCalendar(year, month, dayIndex)
 {
     let result = new CalendarDay(year, month, 1);
-    result.incrementDay(dayIndex - 1);
     return result;
 }
