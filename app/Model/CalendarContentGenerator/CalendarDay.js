@@ -107,12 +107,12 @@ export class CalendarDay
      */
     setMonth(month)
     {
+        if (this.#month === month)
+            return;
+        this.#isWeekdayUpToDate = false;
         if (isMonthExists(month))
         {
-            if (this.#month === month)
-                return
             this.#month = month;
-            this.#isWeekdayUpToDate = false;
             return;
         }
         let yearsToIncrement = 0;
@@ -128,7 +128,6 @@ export class CalendarDay
         }
         this.incrementYear(yearsToIncrement);
         this.#month = month;
-        this.#isWeekdayUpToDate = false;
     }
 
     /**
