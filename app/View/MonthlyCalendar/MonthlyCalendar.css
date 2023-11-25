@@ -1,4 +1,5 @@
-.body
+.body,
+.main
 {
     width: 100%;
     height: 100%;
@@ -12,6 +13,7 @@
     justify-content: flex-end;
     height: 10%;
     width: 100%;
+    background-color: hsl(189, 100%, 70%);
 }
 
 .header Button
@@ -35,22 +37,4 @@
     height: 80%;
 }
 
-.weekend
-{
-    color: red;
-}
 
-.out-of-month
-{
-    color: hsla(0, 50%, 0%, 0.5);
-}
-
-.weekend.out-of-month
-{
-    color: hsla(0, 100%, 50%, 0.5);
-}
-
-.today
-{
-    background-color: hsl(275, 100%, 10%);
-}

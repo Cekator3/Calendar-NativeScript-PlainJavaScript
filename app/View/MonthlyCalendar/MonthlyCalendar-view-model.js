@@ -11,16 +11,18 @@ import {getWeekdaysNames} from "~/Model/Localization/WeekdayNames";
 import {RU} from "~/Model/Constants/LocalesConstants";
 import {getMonthName} from "~/Model/Localization/MonthsNames";
 import {WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
+import {
+    CALENDAR_ITEM_CLASS_DEFAULT,
+    CALENDAR_ITEM_CLASS_OUT_OF_MONTH,
+    CALENDAR_ITEM_CLASS_TODAY,
+    CALENDAR_ITEM_CLASS_WEEKEND
+} from "~/View/Constants/CalendarItemClass";
 
 const viewModel = new Observable();
 let calendarContent = undefined;
-let calendarHeaderCells = [];
-const CALENDAR_CELL_CLASSES_DEFAULT = 'default';
-const CALENDAR_CELL_CLASSES_OUT_OF_MONTH = 'out-of-month';
-const CALENDAR_CELL_CLASSES_WEEKEND = 'weekend';
-const CALENDAR_CELL_CLASSES_TODAY = 'today';
+let calendarWeekdaysItems = [];
 
-function createCalendarCell(text, cssClasses = [CALENDAR_CELL_CLASSES_DEFAULT])
+function createCalendarItem(text, cssClasses = [CALENDAR_ITEM_CLASS_DEFAULT])
 {
     let cell = new Label();
     cell.text = text;
@@ -29,49 +31,47 @@ function createCalendarCell(text, cssClasses = [CALENDAR_CELL_CLASSES_DEFAULT])
     return cell;
 }
 
-function updateCalendarHeaderCells()
+function initCalendarWeekdaysItems()
 {
-    const START = new Date().getTime();
-    calendarHeaderCells = [];
+    calendarWeekdaysItems = [];
     let headers = getWeekdaysNames(RU);
     for (let i = 0; i < 5; i++)
-        calendarHeaderCells.push(createCalendarCell(headers[i]));
+        calendarWeekdaysItems.push(createCalendarItem(headers[i]));
     for (let i = 5; i < 7; i++)
-        calendarHeaderCells.push(createCalendarCell(headers[i], [CALENDAR_CELL_CLASSES_WEEKEND]));
-    const STOP = new Date().getTime();
-    console.log('updateCalendarHeaderCells: ' + (STOP - START) + 'ms');
+        calendarWeekdaysItems.push(createCalendarItem(headers[i], [CALENDAR_ITEM_CLASS_WEEKEND]));
 }
 
-function isOutOfMonthDay(calendarDay)
+function isOutOfMonth(calendarDay)
 {
     return UserSelectedCalendarDateGetYear() !== calendarDay.getYear() ||
            UserSelectedCalendarDateGetMonth() !== calendarDay.getMonth();
 }
 
-function generateCSSclassesOfDay(calendarDay, col)
+function generateCSSclassesOfCalendarDay(calendarDay, col)
 {
-    let cssClasses = [CALENDAR_CELL_CLASSES_DEFAULT];
+    let cssClasses = [];
     if (col >= (WEEKDAY_SATURDAY - 1))
-        cssClasses.push(CALENDAR_CELL_CLASSES_WEEKEND);
+        cssClasses.push(CALENDAR_ITEM_CLASS_WEEKEND);
     if (calendarDay.isToday())
-        cssClasses.push(CALENDAR_CELL_CLASSES_TODAY);
-    if (isOutOfMonthDay(calendarDay))
-        cssClasses.push(CALENDAR_CELL_CLASSES_OUT_OF_MONTH);
+        cssClasses.push(CALENDAR_ITEM_CLASS_TODAY);
+    if (isOutOfMonth(calendarDay))
+        cssClasses.push(CALENDAR_ITEM_CLASS_OUT_OF_MONTH);
+    else
+        cssClasses.push(CALENDAR_ITEM_CLASS_DEFAULT);
     return cssClasses;
 }
 
-function getCalendarCells()
+function generateCalendarContent()
 {
-    const START = new Date().getTime();
-    if (calendarHeaderCells.length === 0)
-        updateCalendarHeaderCells();
-    let calendarCells = [].concat(calendarHeaderCells);
+    if (calendarWeekdaysItems.length === 0)
+        initCalendarWeekdaysItems();
+    let calendarItems = [].concat(calendarWeekdaysItems);
     let row = 1;
     let col = 0;
-    for (let calendarDay of viewModel.get('items'))
+    for (let calendarDay of viewModel.get('calendarDays'))
     {
-        let cssClasses = generateCSSclassesOfDay(calendarDay, col);
-        calendarCells.push(createCalendarCell(calendarDay.getDay(), cssClasses));
+        let cssClasses = generateCSSclassesOfCalendarDay(calendarDay, col);
+        calendarItems.push(createCalendarItem(calendarDay.getDay(), cssClasses));
         col++;
         if (col === 7)
         {
@@ -79,17 +79,18 @@ function getCalendarCells()
             row++;
         }
     }
-    const STOP = new Date().getTime();
-    console.log('getCalendarCells: ' + (STOP - START) + 'ms');
-    return calendarCells;
+    return calendarItems;
 }
 
-function updateDisplayOfCalendarContent()
+function displayNewContentOfCalendar()
 {
-    let cells = getCalendarCells();
     let start = new Date().getTime();
-    calendarContent.removeChildren();
+    let calendarItems = generateCalendarContent();
     let stop = new Date().getTime();
+    console.log('generateCalendarContent: ' + (stop - start) + 'ms');
+    start = new Date().getTime();
+    calendarContent.removeChildren();
+    stop = new Date().getTime();
     console.log('removeChildren: ' + (stop - start) + 'ms');
     start = new Date().getTime();
     let i = 0;
@@ -97,9 +98,9 @@ function updateDisplayOfCalendarContent()
     {
         for (let col = 0; col < 7; col++)
         {
-            calendarContent.addChild(cells[i]);
-            GridLayout.setRow(cells[i], row);
-            GridLayout.setColumn(cells[i], col);
+            calendarContent.addChild(calendarItems[i]);
+            GridLayout.setRow(calendarItems[i], row);
+            GridLayout.setColumn(calendarItems[i], col);
             i++;
         }
     }
@@ -107,57 +108,65 @@ function updateDisplayOfCalendarContent()
     console.log('addChildren: ' + (stop - start) + 'ms');
 }
 
-function updateCalendarContent()
+function updateCalendarDateSwitcher()
 {
-    let start = new Date().getTime();
-    viewModel.items = generateMonthlyCalendar(true,
-                                              UserSelectedCalendarDateGetYear(),
-                                              UserSelectedCalendarDateGetMonth()
-    );
-    let stop = new Date().getTime();
-    console.log('Generate monthly calendar: ' + (stop - start) + 'ms.');
-    start = new Date().getTime();
     let dateStr = getMonthName(UserSelectedCalendarDateGetMonth(), RU) +
                         ' ' +
                         UserSelectedCalendarDateGetYear();
-    stop = new Date().getTime();
-    console.log('Get month name: ' + (stop - start) + 'ms.');
-    viewModel.set('currentMonth', dateStr);
-    updateDisplayOfCalendarContent();
+    viewModel.set('dateSwitcherName', dateStr);
+}
+
+function updateCalendar()
+{
+    let start = new Date().getTime();
+    viewModel.set('calendarDays',
+                  generateMonthlyCalendar(true,
+                                          UserSelectedCalendarDateGetYear(),
+                                          UserSelectedCalendarDateGetMonth()
+                  )
+    );
+    let stop = new Date().getTime();
+    console.log('Obtaining days from monthly generator: ' + (stop - start) + 'ms.');
+    updateCalendarDateSwitcher();
+    displayNewContentOfCalendar();
 }
 
 function incrementMonth()
 {
     UserSelectedCalendarDateIncrementMonth();
-    updateCalendarContent();
+    updateCalendar();
 }
 
 function decrementMonth()
 {
     UserSelectedCalendarDateDecrementMonth();
-    updateCalendarContent();
+    updateCalendar();
 }
 
-function displayUsersTodaysDate() {
-    if (UserSelectedCalendarDateGetDay() === getUsersCurrentDay() &&
-        UserSelectedCalendarDateGetMonth() === getUsersCurrentMonth() &&
-        UserSelectedCalendarDateGetYear() === getUsersCurrentYear())
+function switchCalendarToCurrentDate()
+{
+    let currYear = getUsersCurrentYear();
+    let currMonth = getUsersCurrentMonth();
+    let currDay = getUsersCurrentDay();
+    let choosenDay = UserSelectedCalendarDateGetDay();
+    let choosenMonth = UserSelectedCalendarDateGetMonth();
+    let choosenYear = UserSelectedCalendarDateGetYear();
+    if ((choosenYear === currYear) &&
+        (choosenMonth === currMonth) &&
+        (choosenDay === currDay))
     {
         return;
     }
-    UserSelectedCalendarDateSet(getUsersCurrentYear(),
-                               getUsersCurrentMonth(),
-                               getUsersCurrentDay()
-    );
-    updateCalendarContent();
+    UserSelectedCalendarDateSet(currYear, currMonth, currDay);
+    updateCalendar();
 }
 
 export function createViewModel(args)
 {
     viewModel.incrementMonth = incrementMonth;
     viewModel.decrementMonth = decrementMonth;
-    viewModel.displayUsersTodaysDate = displayUsersTodaysDate;
+    viewModel.switchToCurrentDate = switchCalendarToCurrentDate;
     calendarContent = args.getViewById('calendarContent');
-    updateCalendarContent();
+    updateCalendar();
     return viewModel;
 }

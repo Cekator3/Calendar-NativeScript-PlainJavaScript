@@ -17,3 +17,23 @@ ActionBar
 .fas {
     font-family: Font Awesome 6 Free, fa-solid-900;
 }
+
+.weekend
+{
+    color: red;
+}
+
+.out-of-month
+{
+    color: hsla(0, 50%, 0%, 0.5);
+}
+
+.weekend.out-of-month
+{
+    color: hsla(0, 100%, 50%, 0.5);
+}
+
+.today
+{
+    background-color: hsl(275, 100%, 10%);
+}
