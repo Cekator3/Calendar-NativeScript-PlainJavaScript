@@ -1,26 +1,13 @@
 /**
  * @fileOverview Subsystem for obtaining data about the user's current day.
  */
-let currentDate;
-let currentDay;
-let currentMonth;
-let currentYear;
-
-function ensureCurrentDateUpToDate()
-{
-    let currDate = new Date();
-    let currDay = currDate.getDate();
-    if (currentDay === currDay)
-        return;
-    currentDate = currDate;
-    currentDay = currDay;
-    currentMonth = currDate.getMonth();
-    currentYear = currDate.getFullYear();
-}
+let currentDate = new Date();
+let currentDay = currentDate.getDate();
+let currentMonth = currentDate.getMonth();
+let currentYear = currentDate.getFullYear();
 
 export function getUsersCurrentYear()
 {
-    ensureCurrentDateUpToDate();
     return currentYear;
 }
 
@@ -30,7 +17,6 @@ export function getUsersCurrentYear()
  */
 export function getUsersCurrentMonth()
 {
-    ensureCurrentDateUpToDate();
     return currentMonth;
 }
 
@@ -40,6 +26,5 @@ export function getUsersCurrentMonth()
  */
 export function getUsersCurrentDay()
 {
-    ensureCurrentDateUpToDate();
     return currentDay;
 }

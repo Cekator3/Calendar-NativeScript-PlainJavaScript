@@ -7,7 +7,7 @@ import {MIN_AMOUNT_OF_DAYS_IN_MONTH} from "~/Model/Constants/MIN_AMOUNT_OF_DAYS_
 
 /**
  * Checks if year exists
- * @param {number} year The month of the date
+ * @param {number} year
  * @return {boolean}
  */
 export function isYearExists(year)
@@ -17,7 +17,7 @@ export function isYearExists(year)
 
 /**
  * Checks if month exists
- * @param {number} month The month of the date
+ * @param {number} month
  * @return {boolean}
  */
 export function isMonthExists(month)
@@ -40,9 +40,9 @@ export function isDayExists(year, month, day)
 
 /**
  * Checks if date exists.
- * @param {number} year The year of the date
- * @param {number} month The month of the date
- * @param {number} day The month of the date
+ * @param {number} year
+ * @param {number} month
+ * @param {number} day
  * @return {boolean}
  */
 export function isDateExists(year, month, day)

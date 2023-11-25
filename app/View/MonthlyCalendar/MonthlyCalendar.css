@@ -49,3 +49,8 @@
 {
     color: hsla(0, 100%, 50%, 0.5);
 }
+
+.today
+{
+    background-color: hsl(275, 100%, 10%);
+}
