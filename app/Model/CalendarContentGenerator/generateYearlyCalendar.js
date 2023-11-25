@@ -9,7 +9,7 @@ import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generate
 export function generateYearlyCalendar(year)
 {
     let result = [];
-    for (let i = MONTH_JANUARY; i <= MONTH_DECEMBER; i++)
-        result.push(generateMonthlyCalendar(false, year, i));
+    for (let month = MONTH_JANUARY; month <= MONTH_DECEMBER; month++)
+        result.push(generateMonthlyCalendar(false, year, month));
     return result;
 }

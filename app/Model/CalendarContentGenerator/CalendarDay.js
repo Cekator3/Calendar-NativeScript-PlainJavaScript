@@ -8,7 +8,7 @@ import {WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
 import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {getWeekdayOfDate} from "~/Model/getWeekdayOfDate";
-import {isDateExists} from "~/Model/isDateExists";
+import {isDateExists, isMonthExists, isYearExists} from "~/Model/isDateExists";
 import {MIN_AMOUNT_OF_DAYS_IN_MONTH} from "~/Model/Constants/MIN_AMOUNT_OF_DAYS_IN_MONTH";
 
 /**
@@ -34,15 +34,6 @@ export class CalendarDay
         this.setYear(year);
         this.setMonth(month);
         this.setDay(day);
-    }
-
-    /**
-     * Checks if this calendar day contains a valid date.
-     * @return {boolean}
-     */
-    isDateValid()
-    {
-        return isDateExists(this.year, this.month, this.day);
     }
 
     /**
@@ -88,7 +79,7 @@ export class CalendarDay
 
     #updateWeekday()
     {
-        this.weekday = getWeekdayOfDate(this.year, this.month, this.day);
+        this.weekday = getWeekdayOfDate(this.getYear(), this.getMonth(), this.getDay());
     }
 
     /**
@@ -98,8 +89,13 @@ export class CalendarDay
      */
     setYear(year)
     {
-        this.year = year - 1;
-        this.incrementYear(1);
+        if (year < 1)
+            this.year = 1;
+        else if (year > Number.MAX_SAFE_INTEGER)
+            this.year = Number.MAX_SAFE_INTEGER;
+        if (this.year === year)
+            return;
+        this.year = year;
         this.#isWeekdayUpToDate = false;
     }
 
@@ -110,9 +106,15 @@ export class CalendarDay
      */
     setMonth(month)
     {
+        if (isMonthExists(month))
+        {
+            if (this.month === month)
+                return;
+            this.month = month;
+            this.#isWeekdayUpToDate = false;
+        }
         this.month = month - 1;
         this.incrementMonth(1);
-        this.#isWeekdayUpToDate = false;
     }
 
     /**
@@ -122,9 +124,10 @@ export class CalendarDay
      */
     setDay(day)
     {
+        if (this.day === day)
+            return;
         this.day = day - 1;
         this.incrementDay(1);
-        this.#isWeekdayUpToDate = false;
     }
 
     /**
@@ -159,15 +162,7 @@ export class CalendarDay
      */
     incrementYear(value = 1)
     {
-        if (value === 0)
-            return;
-        this.#isWeekdayUpToDate = false;
-        if (this.year + value < 1)
-            this.year = 1;
-        else if (!Number.isInteger(this.year + value))
-            this.year = Number.MAX_SAFE_INTEGER;
-        else
-            this.year = this.year + value;
+        this.setYear(this.year + value);
     }
 
     /**
