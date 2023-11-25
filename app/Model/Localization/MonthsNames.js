@@ -31,14 +31,14 @@ function initRuMonthNames()
 
 export function getMonthName(month, locale= RU)
 {
-    let result = undefined;
+    let result;
     switch (locale)
     {
         case RU:
             result = ru.get(month);
             break;
         default:
-            throw new LocaleNotSupportedException(locale);
+            break;
     }
     if (result === undefined)
         throw new LocaleNotSupportedException(locale);
