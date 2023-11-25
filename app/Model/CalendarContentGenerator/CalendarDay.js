@@ -20,7 +20,7 @@ export class CalendarDay
     #month;
     #year;
     #weekday;
-    #isWeekdayUpToDate = false;
+    #isWeekdayUpToDate;
 
     /**
      * Creates a calendar day.
@@ -34,6 +34,7 @@ export class CalendarDay
         this.setYear(year);
         this.setMonth(month);
         this.setDay(day);
+        this.#isWeekdayUpToDate = false;
     }
 
     /**
@@ -79,7 +80,7 @@ export class CalendarDay
 
     #updateWeekday()
     {
-        this.#weekday = getWeekdayOfDate(this.getYear(), this.getMonth(), this.getDay());
+        this.#weekday = getWeekdayOfDate(this.#year, this.#month, this.#day);
     }
 
     /**
@@ -117,7 +118,7 @@ export class CalendarDay
         let yearsToIncrement = 0;
         while (month > MONTH_DECEMBER)
         {
-            month -= (MONTH_DECEMBER - 1);
+            month -= (MONTH_DECEMBER + 1);
             yearsToIncrement++;
         }
         while (month < MONTH_JANUARY)
