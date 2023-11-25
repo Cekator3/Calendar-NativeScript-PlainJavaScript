@@ -24,7 +24,7 @@ export function UserSelectedCalendarDateSet(year = undefined, month = undefined,
     if (month !== undefined)
         selectedCalendarDate.setMonth(month);
     if (day !== undefined)
-        selectedCalendarDate.setYear(day);
+        selectedCalendarDate.setDay(day);
 }
 
 /**
