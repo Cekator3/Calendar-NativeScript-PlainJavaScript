@@ -31,13 +31,9 @@ export class CalendarDay
      */
     constructor(year, month, day)
     {
-        this.year = year - 1;
-        this.month = month - 1;
-        this.day = day - 1;
-        this.incrementYear(1);
-        this.incrementMonth(1);
-        this.incrementDay(1);
-        this.#isWeekdayUpToDate = false;
+        this.setYear(year);
+        this.setYear(month);
+        this.setYear(day);
     }
 
     /**
@@ -93,26 +89,6 @@ export class CalendarDay
     #updateWeekday()
     {
         this.weekday = getWeekdayOfDate(this.year, this.month, this.day);
-    }
-
-    /**
-     * Sets the date of the calendar day.
-     * @param {number} year
-     * @param {number} month
-     * @param {number} day
-     * @returns {void}
-     */
-    setDate(year = undefined, month = undefined, day = undefined)
-    {
-        if (year !== undefined)
-            this.setYear(year);
-        if (month !== undefined)
-            this.setMonth(month);
-        if (day !== undefined)
-            this.setDay(day);
-        this.#isWeekdayUpToDate = (year === undefined) &&
-                                  (month === undefined) &&
-                                  (day === undefined);
     }
 
     /**
