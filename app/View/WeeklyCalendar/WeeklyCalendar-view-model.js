@@ -1,22 +1,20 @@
 import {Dialogs, Frame, GridLayout, Label, Observable} from '@nativescript/core'
-import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generateMonthlyCalendar";
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {
-    UserSelectedCalendarDateDecrementMonth, UserSelectedCalendarDateGetDay,
+    UserSelectedCalendarDateDecrementWeek, UserSelectedCalendarDateGetDay,
     UserSelectedCalendarDateGetMonth,
     UserSelectedCalendarDateGetYear,
-    UserSelectedCalendarDateIncrementMonth, UserSelectedCalendarDateSet
+    UserSelectedCalendarDateIncrementWeek, UserSelectedCalendarDateSet
 } from "~/Model/UserSelectedCalendarDate";
 import {getWeekdaysNames} from "~/Model/Localization/WeekdayNames";
 import {RU} from "~/Model/Constants/LocalesConstants";
 import {getMonthName} from "~/Model/Localization/MonthsNames";
-import {WEEKDAY_MONDAY, WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
 import {
     CALENDAR_ITEM_CLASS_DEFAULT,
-    CALENDAR_ITEM_CLASS_OUT_OF_MONTH,
     CALENDAR_ITEM_CLASS_TODAY,
     CALENDAR_ITEM_CLASS_WEEKEND
 } from "~/View/Constants/CalendarItemClass";
+import {generateWeeklyCalendar} from "~/Model/CalendarContentGenerator/generateWeeklyCalendar";
 
 const DATE_SWITCHER_PATH = '/View/DateSwitcher/DateSwitcher';
 
@@ -49,24 +47,22 @@ function initCalendarWeekdaysItems()
     }
 }
 
-function isOutOfMonth(calendarDay)
-{
-    return UserSelectedCalendarDateGetYear() !== calendarDay.getYear() ||
-           UserSelectedCalendarDateGetMonth() !== calendarDay.getMonth();
-}
-
 function generateCSSclassesOfCalendarDay(calendarDay, col)
 {
-    let cssClasses = [];
+    let cssClasses = [CALENDAR_ITEM_CLASS_DEFAULT];
     if (col >= 5)
         cssClasses.push(CALENDAR_ITEM_CLASS_WEEKEND);
     if (calendarDay.isToday())
         cssClasses.push(CALENDAR_ITEM_CLASS_TODAY);
-    if (isOutOfMonth(calendarDay))
-        cssClasses.push(CALENDAR_ITEM_CLASS_OUT_OF_MONTH);
-    else
-        cssClasses.push(CALENDAR_ITEM_CLASS_DEFAULT);
     return cssClasses;
+}
+
+function getCalendarDays()
+{
+    let year = UserSelectedCalendarDateGetYear();
+    let month = UserSelectedCalendarDateGetMonth();
+    let day = UserSelectedCalendarDateGetDay();
+    return generateWeeklyCalendar(year, month, day);
 }
 
 function generateCalendarContent()
@@ -74,23 +70,19 @@ function generateCalendarContent()
     if (calendarWeekdaysItems.length === 0)
         initCalendarWeekdaysItems();
     let calendarItems = [...calendarWeekdaysItems];
-    let row = 1;
-    let col = 0;
-    for (let calendarDay of viewModel.get('calendarDays'))
+    let start = new Date().getTime();
+    let calendarDays = getCalendarDays();
+    let stop = new Date().getTime();
+    console.log('getCalendarDays: ' + (stop - start) + 'ms');
+    for (let i = 0; i < calendarDays.length; i++)
     {
-        let cssClasses = generateCSSclassesOfCalendarDay(calendarDay, col);
-        calendarItems.push(createCalendarItem(calendarDay.getDay(), cssClasses));
-        col++;
-        if (col === 7)
-        {
-            col = 0;
-            row++;
-        }
+        let cssClasses = generateCSSclassesOfCalendarDay(calendarDays[i], i);
+        calendarItems.push(createCalendarItem(calendarDays[i].getDay(), cssClasses));
     }
     return calendarItems;
 }
 
-function displayNewContentOfCalendar()
+function updateContentOfCalendar()
 {
     let start = new Date().getTime();
     let calendarItems = generateCalendarContent();
@@ -102,7 +94,7 @@ function displayNewContentOfCalendar()
     console.log('removeChildren: ' + (stop - start) + 'ms');
     start = new Date().getTime();
     let i = 0;
-    for (let row = 0; row < 7; row++)
+    for (let row = 0; row < 2; row++)
     {
         for (let col = 0; col < 7; col++)
         {
@@ -126,28 +118,19 @@ function updateCalendarDateSwitcher()
 
 function updateCalendar()
 {
-    let start = new Date().getTime();
-    viewModel.set('calendarDays',
-                  generateMonthlyCalendar(true,
-                                          UserSelectedCalendarDateGetYear(),
-                                          UserSelectedCalendarDateGetMonth()
-                  )
-    );
-    let stop = new Date().getTime();
-    console.log('Obtaining days from monthly generator: ' + (stop - start) + 'ms.');
     updateCalendarDateSwitcher();
-    displayNewContentOfCalendar();
+    updateContentOfCalendar();
 }
 
-function incrementMonth()
+function incrementWeek()
 {
-    UserSelectedCalendarDateIncrementMonth();
+    UserSelectedCalendarDateIncrementWeek();
     updateCalendar();
 }
 
-function decrementMonth()
+function decrementWeek()
 {
-    UserSelectedCalendarDateDecrementMonth();
+    UserSelectedCalendarDateDecrementWeek();
     updateCalendar();
 }
 
@@ -182,7 +165,7 @@ function navigateTo(path, clearHistory, context = {})
 function showDateSwitcher()
 {
     navigateTo(DATE_SWITCHER_PATH, false, {
-        previousPagePath: '/View/MonthlyCalendar/MonthlyCalendar'
+        previousPagePath: '/View/WeeklyCalendar/WeeklyCalendar'
     });
 }
 
@@ -200,14 +183,13 @@ function changeCalendarView()
     {
         switch (calendarView)
         {
-            case WEEK:
-                console.log('lol');
-                navigateTo('/View/WeeklyCalendar/WeeklyCalendar', true);
-                return;
             case YEAR:
                 navigateTo('/View/YearlyCalendar/YearlyCalendar', true);
                 return;
             case MONTH:
+                navigateTo('/View/MonthlyCalendar/MonthlyCalendar', true);
+                return;
+            case WEEK:
             default:
                 return;
         }
@@ -216,8 +198,8 @@ function changeCalendarView()
 
 export function createViewModel(args)
 {
-    viewModel.incrementMonth = incrementMonth;
-    viewModel.decrementMonth = decrementMonth;
+    viewModel.incrementMonth = incrementWeek;
+    viewModel.decrementMonth = decrementWeek;
     viewModel.switchToCurrentDate = switchCalendarToCurrentDate;
     viewModel.changeCalendarView = changeCalendarView;
     viewModel.showDateSwitcher = showDateSwitcher;
