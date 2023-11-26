@@ -34,7 +34,6 @@ export class CalendarDay
         this.setYear(year);
         this.setMonth(month);
         this.setDay(day);
-        this.#isWeekdayUpToDate = false;
     }
 
     /**
