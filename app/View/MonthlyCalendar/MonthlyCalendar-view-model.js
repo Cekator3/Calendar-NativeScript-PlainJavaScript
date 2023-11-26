@@ -10,7 +10,7 @@ import {
 import {getWeekdaysNames} from "~/Model/Localization/WeekdayNames";
 import {RU} from "~/Model/Constants/LocalesConstants";
 import {getMonthName} from "~/Model/Localization/MonthsNames";
-import {WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
+import {WEEKDAY_MONDAY, WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
 import {
     CALENDAR_ITEM_CLASS_DEFAULT,
     CALENDAR_ITEM_CLASS_OUT_OF_MONTH,
@@ -22,12 +22,11 @@ const viewModel = new Observable();
 let calendarContent = undefined;
 let calendarWeekdaysItems = [];
 
-function createCalendarItem(text, cssClasses = [CALENDAR_ITEM_CLASS_DEFAULT])
+function createCalendarItem(text, cssClasses)
 {
     let cell = new Label();
     cell.text = text;
-    for (let cssClass of cssClasses)
-        cell.cssClasses.add(cssClass);
+    cell.cssClasses.add(...cssClasses);
     return cell;
 }
 
@@ -35,10 +34,16 @@ function initCalendarWeekdaysItems()
 {
     calendarWeekdaysItems = [];
     let headers = getWeekdaysNames(RU);
-    for (let i = 0; i < 5; i++)
-        calendarWeekdaysItems.push(createCalendarItem(headers[i]));
-    for (let i = 5; i < 7; i++)
-        calendarWeekdaysItems.push(createCalendarItem(headers[i], [CALENDAR_ITEM_CLASS_WEEKEND]));
+    for (let i = 0; i <= 4; i++)
+    {
+        let item = createCalendarItem(headers[i], [CALENDAR_ITEM_CLASS_DEFAULT]);
+        calendarWeekdaysItems.push(item);
+    }
+    for (let i = 5; i <= 6; i++)
+    {
+        let item = createCalendarItem(headers[i], [CALENDAR_ITEM_CLASS_WEEKEND]);
+        calendarWeekdaysItems.push(item);
+    }
 }
 
 function isOutOfMonth(calendarDay)
@@ -50,7 +55,7 @@ function isOutOfMonth(calendarDay)
 function generateCSSclassesOfCalendarDay(calendarDay, col)
 {
     let cssClasses = [];
-    if (col >= (WEEKDAY_SATURDAY - 1))
+    if (col >= 5)
         cssClasses.push(CALENDAR_ITEM_CLASS_WEEKEND);
     if (calendarDay.isToday())
         cssClasses.push(CALENDAR_ITEM_CLASS_TODAY);
@@ -65,7 +70,7 @@ function generateCalendarContent()
 {
     if (calendarWeekdaysItems.length === 0)
         initCalendarWeekdaysItems();
-    let calendarItems = [].concat(calendarWeekdaysItems);
+    let calendarItems = [...calendarWeekdaysItems];
     let row = 1;
     let col = 0;
     for (let calendarDay of viewModel.get('calendarDays'))
