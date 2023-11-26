@@ -9,3 +9,25 @@
     flex-flow: row nowrap;
     justify-content: center;
 }
+
+.control-panel Button
+{
+    border-size: 1px;
+    border-style: solid;
+    font-size: 18px;
+    width: 25%;
+}
+
+.control-panel .saveChanges
+{
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.control-panel .discardChanges
+{
+    background-color: #f8f9fa;
+    color: #212529;
+    border-color: #f8f9fa;
+}

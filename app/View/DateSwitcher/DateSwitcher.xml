@@ -6,8 +6,8 @@
                 day="{{ currentDay }}"
         />
         <FlexboxLayout class="control-panel">
-            <Button text="Готово" tap="{{ saveSelectedDate }}"/>
-            <Button text="Отмена" tap="{{ gotoPreviousPage }}" />
+            <Button text="Отмена" class="discardChanges" tap="{{ gotoPreviousPage }}" />
+            <Button text="Готово" class="saveChanges" tap="{{ saveSelectedDate }}"/>
         </FlexboxLayout>
     </FlexboxLayout>
 </Page>

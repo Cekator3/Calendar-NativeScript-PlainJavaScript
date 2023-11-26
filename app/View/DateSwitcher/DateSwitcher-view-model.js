@@ -25,14 +25,19 @@ function gotoPreviousPage()
     });
 }
 
+function initDateSwitcher()
+{
+    viewModel.set('currentYear', UserSelectedCalendarDateGetYear());
+    viewModel.set('currentMonth', UserSelectedCalendarDateGetMonth() + 1);
+    viewModel.set('currentDay', UserSelectedCalendarDateGetDay());
+}
+
 export function createViewModel(page)
 {
-    viewModel.currentYear = UserSelectedCalendarDateGetYear();
-    viewModel.currentMonth = UserSelectedCalendarDateGetMonth() + 1;
-    viewModel.currentDay = UserSelectedCalendarDateGetDay();
     viewModel.gotoPreviousPage = gotoPreviousPage;
     viewModel.saveSelectedDate = saveSelectedDate;
     viewModel.previousPagePath = page.navigationContext.previousPagePath;
+    initDateSwitcher();
     dateSwitcher = page.getViewById('dateSwitcher');
     return viewModel;
 }
