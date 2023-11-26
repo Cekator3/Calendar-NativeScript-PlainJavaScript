@@ -4,48 +4,24 @@ import {
     UserSelectedCalendarDateDecrementWeek, UserSelectedCalendarDateGetDay,
     UserSelectedCalendarDateGetMonth,
     UserSelectedCalendarDateGetYear,
-    UserSelectedCalendarDateIncrementWeek, UserSelectedCalendarDateSet
+    UserSelectedCalendarDateIncrementWeek, UserSelectedCalendarDateIsToday, UserSelectedCalendarDateSet
 } from "~/Model/UserSelectedCalendarDate";
-import {getWeekdaysNames} from "~/Model/Localization/WeekdayNames";
+import {getWeekdaysNames} from "~/Model/CalendarNames/WeekdayNames";
 import {RU} from "~/Model/Constants/LocalesConstants";
-import {getMonthName} from "~/Model/Localization/MonthsNames";
+import {getMonthName} from "~/Model/CalendarNames/MonthsNames";
 import {
     CALENDAR_ITEM_CLASS_DEFAULT,
     CALENDAR_ITEM_CLASS_TODAY,
     CALENDAR_ITEM_CLASS_WEEKEND
 } from "~/View/Constants/CalendarItemClass";
 import {generateWeeklyCalendar} from "~/Model/CalendarContentGenerator/generateWeeklyCalendar";
+import {getCalendarWeekdaysItems} from "~/View/getCalendarWeekdaysItems";
+import {createCalendarItem} from "~/View/createCalendarItem";
 
 const DATE_SWITCHER_PATH = '/View/DateSwitcher/DateSwitcher';
 
 const viewModel = new Observable();
 let calendarContent = undefined;
-let calendarWeekdaysItems = [];
-
-function createCalendarItem(text, cssClasses)
-{
-    let cell = new Label();
-    cell.text = text;
-    for (let cssClass of cssClasses)
-        cell.cssClasses.add(cssClass);
-    return cell;
-}
-
-function initCalendarWeekdaysItems()
-{
-    calendarWeekdaysItems = [];
-    let headers = getWeekdaysNames(RU);
-    for (let i = 0; i <= 4; i++)
-    {
-        let item = createCalendarItem(headers[i], [CALENDAR_ITEM_CLASS_DEFAULT]);
-        calendarWeekdaysItems.push(item);
-    }
-    for (let i = 5; i <= 6; i++)
-    {
-        let item = createCalendarItem(headers[i], [CALENDAR_ITEM_CLASS_WEEKEND]);
-        calendarWeekdaysItems.push(item);
-    }
-}
 
 function generateCSSclassesOfCalendarDay(calendarDay, col)
 {
@@ -65,11 +41,9 @@ function getCalendarDays()
     return generateWeeklyCalendar(year, month, day);
 }
 
-function generateCalendarContent()
+function generateCalendarContentItems()
 {
-    if (calendarWeekdaysItems.length === 0)
-        initCalendarWeekdaysItems();
-    let calendarItems = [...calendarWeekdaysItems];
+    let calendarItems = [...getCalendarWeekdaysItems()];
     let start = new Date().getTime();
     let calendarDays = getCalendarDays();
     let stop = new Date().getTime();
@@ -85,7 +59,7 @@ function generateCalendarContent()
 function updateContentOfCalendar()
 {
     let start = new Date().getTime();
-    let calendarItems = generateCalendarContent();
+    let calendarItems = generateCalendarContentItems();
     let stop = new Date().getTime();
     console.log('generateCalendarContent: ' + (stop - start) + 'ms');
     start = new Date().getTime();
@@ -110,10 +84,10 @@ function updateContentOfCalendar()
 
 function updateCalendarDateSwitcher()
 {
-    let dateStr = getMonthName(UserSelectedCalendarDateGetMonth(), RU) +
-                        ' ' +
-                        UserSelectedCalendarDateGetYear();
-    viewModel.set('dateSwitcherName', dateStr);
+    let month = UserSelectedCalendarDateGetMonth();
+    let year = UserSelectedCalendarDateGetYear();
+    let newName = getMonthName(month) + ' ' + year;
+    viewModel.set('dateSwitcherName', newName);
 }
 
 function updateCalendar()
@@ -134,23 +108,24 @@ function decrementWeek()
     updateCalendar();
 }
 
+function isCalendarDisplayingTodaysDay()
+{
+    return (UserSelectedCalendarDateGetYear() === getUsersCurrentYear()) &&
+        (UserSelectedCalendarDateGetMonth() === getUsersCurrentMonth()) &&
+        (UserSelectedCalendarDateGetDay() === getUsersCurrentDay());
+}
+
 function switchCalendarToCurrentDate()
 {
+    if (isCalendarDisplayingTodaysDay())
+        return;
     let currYear = getUsersCurrentYear();
     let currMonth = getUsersCurrentMonth();
     let currDay = getUsersCurrentDay();
-    let choosenDay = UserSelectedCalendarDateGetDay();
-    let choosenMonth = UserSelectedCalendarDateGetMonth();
-    let choosenYear = UserSelectedCalendarDateGetYear();
-    if ((choosenYear === currYear) &&
-        (choosenMonth === currMonth) &&
-        (choosenDay === currDay))
-    {
-        return;
-    }
     UserSelectedCalendarDateSet(currYear, currMonth, currDay);
     updateCalendar();
 }
+
 
 function navigateTo(path, clearHistory, context = {})
 {

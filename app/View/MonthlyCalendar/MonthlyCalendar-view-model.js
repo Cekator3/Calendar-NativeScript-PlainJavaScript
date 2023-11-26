@@ -1,53 +1,27 @@
-import {Dialogs, Frame, GridLayout, Label, Observable} from '@nativescript/core'
+import {Dialogs, Frame, GridLayout, Observable} from '@nativescript/core'
 import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generateMonthlyCalendar";
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {
     UserSelectedCalendarDateDecrementMonth, UserSelectedCalendarDateGetDay,
     UserSelectedCalendarDateGetMonth,
     UserSelectedCalendarDateGetYear,
-    UserSelectedCalendarDateIncrementMonth, UserSelectedCalendarDateSet
+    UserSelectedCalendarDateIncrementMonth, UserSelectedCalendarDateIsToday, UserSelectedCalendarDateSet
 } from "~/Model/UserSelectedCalendarDate";
-import {getWeekdaysNames} from "~/Model/Localization/WeekdayNames";
 import {RU} from "~/Model/Constants/LocalesConstants";
-import {getMonthName} from "~/Model/Localization/MonthsNames";
-import {WEEKDAY_MONDAY, WEEKDAY_SATURDAY} from "~/Model/Constants/WeekdaysConstants";
+import {getMonthName} from "~/Model/CalendarNames/MonthsNames";
 import {
     CALENDAR_ITEM_CLASS_DEFAULT,
     CALENDAR_ITEM_CLASS_OUT_OF_MONTH,
     CALENDAR_ITEM_CLASS_TODAY,
     CALENDAR_ITEM_CLASS_WEEKEND
 } from "~/View/Constants/CalendarItemClass";
+import {createCalendarItem} from "~/View/createCalendarItem";
+import {getCalendarWeekdaysItems} from "~/View/getCalendarWeekdaysItems";
 
 const DATE_SWITCHER_PATH = '/View/DateSwitcher/DateSwitcher';
 
 const viewModel = new Observable();
 let calendarContent = undefined;
-let calendarWeekdaysItems = [];
-
-function createCalendarItem(text, cssClasses)
-{
-    let cell = new Label();
-    cell.text = text;
-    for (let cssClass of cssClasses)
-        cell.cssClasses.add(cssClass);
-    return cell;
-}
-
-function initCalendarWeekdaysItems()
-{
-    calendarWeekdaysItems = [];
-    let headers = getWeekdaysNames(RU);
-    for (let i = 0; i <= 4; i++)
-    {
-        let item = createCalendarItem(headers[i], [CALENDAR_ITEM_CLASS_DEFAULT]);
-        calendarWeekdaysItems.push(item);
-    }
-    for (let i = 5; i <= 6; i++)
-    {
-        let item = createCalendarItem(headers[i], [CALENDAR_ITEM_CLASS_WEEKEND]);
-        calendarWeekdaysItems.push(item);
-    }
-}
 
 function isOutOfMonth(calendarDay)
 {
@@ -69,14 +43,20 @@ function generateCSSclassesOfCalendarDay(calendarDay, col)
     return cssClasses;
 }
 
-function generateCalendarContent()
+function getCalendarDays()
 {
-    if (calendarWeekdaysItems.length === 0)
-        initCalendarWeekdaysItems();
-    let calendarItems = [...calendarWeekdaysItems];
+    let year = UserSelectedCalendarDateGetYear();
+    let month = UserSelectedCalendarDateGetMonth();
+    return generateMonthlyCalendar(true, year, month);
+}
+
+function generateCalendarContentItems()
+{
+    let calendarItems = [...getCalendarWeekdaysItems()];
+    let calendarDays = getCalendarDays();
     let row = 1;
     let col = 0;
-    for (let calendarDay of viewModel.get('calendarDays'))
+    for (let calendarDay of calendarDays)
     {
         let cssClasses = generateCSSclassesOfCalendarDay(calendarDay, col);
         calendarItems.push(createCalendarItem(calendarDay.getDay(), cssClasses));
@@ -93,7 +73,7 @@ function generateCalendarContent()
 function displayNewContentOfCalendar()
 {
     let start = new Date().getTime();
-    let calendarItems = generateCalendarContent();
+    let calendarItems = generateCalendarContentItems();
     let stop = new Date().getTime();
     console.log('generateCalendarContent: ' + (stop - start) + 'ms');
     start = new Date().getTime();
@@ -116,26 +96,17 @@ function displayNewContentOfCalendar()
     console.log('addChildren: ' + (stop - start) + 'ms');
 }
 
-function updateCalendarDateSwitcher()
+function updateCalendarDateSwitcherName()
 {
-    let dateStr = getMonthName(UserSelectedCalendarDateGetMonth(), RU) +
-                        ' ' +
-                        UserSelectedCalendarDateGetYear();
-    viewModel.set('dateSwitcherName', dateStr);
+    let month = UserSelectedCalendarDateGetMonth();
+    let year = UserSelectedCalendarDateGetYear();
+    let newName = getMonthName(month) + ' ' + year;
+    viewModel.set('dateSwitcherName', newName);
 }
 
 function updateCalendar()
 {
-    let start = new Date().getTime();
-    viewModel.set('calendarDays',
-                  generateMonthlyCalendar(true,
-                                          UserSelectedCalendarDateGetYear(),
-                                          UserSelectedCalendarDateGetMonth()
-                  )
-    );
-    let stop = new Date().getTime();
-    console.log('Obtaining days from monthly generator: ' + (stop - start) + 'ms.');
-    updateCalendarDateSwitcher();
+    updateCalendarDateSwitcherName();
     displayNewContentOfCalendar();
 }
 
@@ -151,20 +122,20 @@ function decrementMonth()
     updateCalendar();
 }
 
+function isCalendarDisplayingTodaysDay()
+{
+    return (UserSelectedCalendarDateGetYear() === getUsersCurrentYear()) &&
+           (UserSelectedCalendarDateGetMonth() === getUsersCurrentMonth()) &&
+           (UserSelectedCalendarDateGetDay() === getUsersCurrentDay());
+}
+
 function switchCalendarToCurrentDate()
 {
+    if (isCalendarDisplayingTodaysDay())
+        return;
     let currYear = getUsersCurrentYear();
     let currMonth = getUsersCurrentMonth();
     let currDay = getUsersCurrentDay();
-    let choosenDay = UserSelectedCalendarDateGetDay();
-    let choosenMonth = UserSelectedCalendarDateGetMonth();
-    let choosenYear = UserSelectedCalendarDateGetYear();
-    if ((choosenYear === currYear) &&
-        (choosenMonth === currMonth) &&
-        (choosenDay === currDay))
-    {
-        return;
-    }
     UserSelectedCalendarDateSet(currYear, currMonth, currDay);
     updateCalendar();
 }
