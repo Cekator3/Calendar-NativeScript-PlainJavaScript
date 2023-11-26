@@ -3,7 +3,6 @@ import {MONTH_DECEMBER, MONTH_JANUARY} from "~/Model/Constants/MonthsConstants";
 import {getAmountOfDaysInMonth} from "~/Model/getAmountOfDaysInMonth";
 import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generateMonthlyCalendar";
 import {getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
-import {generateYearlyCalendar} from "~/Model/CalendarContentGenerator/generateYearlyCalendar";
 
 QUnit.test("Should generate calendar content for the week.", testGenerateWeeklyCalendar);
 QUnit.test("Should generate calendar content for the month.", testGenerateMonthlyCalendar);
