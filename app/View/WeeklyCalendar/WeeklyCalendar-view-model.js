@@ -1,13 +1,11 @@
-import {Dialogs, Frame, GridLayout, Label, Observable} from '@nativescript/core'
+import {Dialogs, Frame, GridLayout, Observable} from '@nativescript/core'
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {
     UserSelectedCalendarDateDecrementWeek, UserSelectedCalendarDateGetDay,
     UserSelectedCalendarDateGetMonth,
     UserSelectedCalendarDateGetYear,
-    UserSelectedCalendarDateIncrementWeek, UserSelectedCalendarDateIsToday, UserSelectedCalendarDateSet
+    UserSelectedCalendarDateIncrementWeek, UserSelectedCalendarDateSet
 } from "~/Model/UserSelectedCalendarDate";
-import {getWeekdaysNames} from "~/Model/CalendarNames/WeekdayNames";
-import {RU} from "~/Model/Constants/LocalesConstants";
 import {getMonthName} from "~/Model/CalendarNames/MonthsNames";
 import {
     CALENDAR_ITEM_CLASS_DEFAULT,
@@ -44,10 +42,7 @@ function getCalendarDays()
 function generateCalendarContentItems()
 {
     let calendarItems = [...getCalendarWeekdaysItems()];
-    let start = new Date().getTime();
     let calendarDays = getCalendarDays();
-    let stop = new Date().getTime();
-    console.log('getCalendarDays: ' + (stop - start) + 'ms');
     for (let i = 0; i < calendarDays.length; i++)
     {
         let cssClasses = generateCSSclassesOfCalendarDay(calendarDays[i], i);
@@ -58,15 +53,8 @@ function generateCalendarContentItems()
 
 function updateContentOfCalendar()
 {
-    let start = new Date().getTime();
     let calendarItems = generateCalendarContentItems();
-    let stop = new Date().getTime();
-    console.log('generateCalendarContent: ' + (stop - start) + 'ms');
-    start = new Date().getTime();
     calendarContent.removeChildren();
-    stop = new Date().getTime();
-    console.log('removeChildren: ' + (stop - start) + 'ms');
-    start = new Date().getTime();
     let i = 0;
     for (let row = 0; row < 2; row++)
     {
@@ -78,8 +66,6 @@ function updateContentOfCalendar()
             i++;
         }
     }
-    stop = new Date().getTime();
-    console.log('addChildren: ' + (stop - start) + 'ms');
 }
 
 function updateCalendarDateSwitcher()

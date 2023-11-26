@@ -5,9 +5,8 @@ import {
     UserSelectedCalendarDateDecrementMonth, UserSelectedCalendarDateGetDay,
     UserSelectedCalendarDateGetMonth,
     UserSelectedCalendarDateGetYear,
-    UserSelectedCalendarDateIncrementMonth, UserSelectedCalendarDateIsToday, UserSelectedCalendarDateSet
+    UserSelectedCalendarDateIncrementMonth, UserSelectedCalendarDateSet
 } from "~/Model/UserSelectedCalendarDate";
-import {RU} from "~/Model/Constants/LocalesConstants";
 import {getMonthName} from "~/Model/CalendarNames/MonthsNames";
 import {
     CALENDAR_ITEM_CLASS_DEFAULT,
@@ -72,15 +71,8 @@ function generateCalendarContentItems()
 
 function displayNewContentOfCalendar()
 {
-    let start = new Date().getTime();
     let calendarItems = generateCalendarContentItems();
-    let stop = new Date().getTime();
-    console.log('generateCalendarContent: ' + (stop - start) + 'ms');
-    start = new Date().getTime();
     calendarContent.removeChildren();
-    stop = new Date().getTime();
-    console.log('removeChildren: ' + (stop - start) + 'ms');
-    start = new Date().getTime();
     let i = 0;
     for (let row = 0; row < 7; row++)
     {
@@ -92,8 +84,6 @@ function displayNewContentOfCalendar()
             i++;
         }
     }
-    stop = new Date().getTime();
-    console.log('addChildren: ' + (stop - start) + 'ms');
 }
 
 function updateCalendarDateSwitcherName()
