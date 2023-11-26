@@ -6,9 +6,9 @@
         </FlexboxLayout>
         <StackLayout class="main">
             <FlexboxLayout class="header-date-picker">
-                <Button class="fas dateIncrementer" text="&#xf060;" tap="{{ decrementMonth }}"/>
+                <Button class="fas dateIncrementer" text="&#xf060;" tap="{{ decrementWeek }}"/>
                 <Button class="dateSwitcher" text="{{ dateSwitcherName }}" tap="{{ showDateSwitcher }}"/>
-                <Button class="fas dateIncrementer" text="&#xf061;" tap="{{ incrementMonth }}"/>
+                <Button class="fas dateIncrementer" text="&#xf061;" tap="{{ incrementWeek }}"/>
             </FlexboxLayout>
             <GridLayout id="calendarContent" columns="*, *, *, *, *, *, *" rows="*, *" />
         </StackLayout>

@@ -111,8 +111,7 @@ function decrementWeek()
 function isCalendarDisplayingTodaysDay()
 {
     return (UserSelectedCalendarDateGetYear() === getUsersCurrentYear()) &&
-        (UserSelectedCalendarDateGetMonth() === getUsersCurrentMonth()) &&
-        (UserSelectedCalendarDateGetDay() === getUsersCurrentDay());
+           (UserSelectedCalendarDateGetMonth() === getUsersCurrentMonth());
 }
 
 function switchCalendarToCurrentDate()
@@ -148,19 +147,15 @@ function changeCalendarView()
 {
     const WEEK = 'Неделя';
     const MONTH = 'Месяц';
-    const YEAR = 'Год';
     Dialogs.action({
         title: 'Режим',
         cancelButtonText: 'Отмена',
-        actions: [WEEK, MONTH, YEAR],
+        actions: [WEEK, MONTH],
         cancelable: true,
     }).then((calendarView) =>
     {
         switch (calendarView)
         {
-            case YEAR:
-                navigateTo('/View/YearlyCalendar/YearlyCalendar', true);
-                return;
             case MONTH:
                 navigateTo('/View/MonthlyCalendar/MonthlyCalendar', true);
                 return;
@@ -173,8 +168,8 @@ function changeCalendarView()
 
 export function createViewModel(args)
 {
-    viewModel.incrementMonth = incrementWeek;
-    viewModel.decrementMonth = decrementWeek;
+    viewModel.incrementWeek = incrementWeek;
+    viewModel.decrementWeek = decrementWeek;
     viewModel.switchToCurrentDate = switchCalendarToCurrentDate;
     viewModel.changeCalendarView = changeCalendarView;
     viewModel.showDateSwitcher = showDateSwitcher;

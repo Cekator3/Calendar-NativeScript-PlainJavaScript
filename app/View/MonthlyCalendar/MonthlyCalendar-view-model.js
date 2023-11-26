@@ -161,22 +161,17 @@ function changeCalendarView()
 {
     const WEEK = 'Неделя';
     const MONTH = 'Месяц';
-    const YEAR = 'Год';
     Dialogs.action({
         title: 'Режим',
         cancelButtonText: 'Отмена',
-        actions: [WEEK, MONTH, YEAR],
+        actions: [WEEK, MONTH],
         cancelable: true,
     }).then((calendarView) =>
     {
         switch (calendarView)
         {
             case WEEK:
-                console.log('lol');
                 navigateTo('/View/WeeklyCalendar/WeeklyCalendar', true);
-                return;
-            case YEAR:
-                navigateTo('/View/YearlyCalendar/YearlyCalendar', true);
                 return;
             case MONTH:
             default:
