@@ -1,4 +1,4 @@
-import {Frame, GridLayout, Label, Observable} from '@nativescript/core'
+import {Dialogs, Frame, GridLayout, Label, Observable} from '@nativescript/core'
 import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generateMonthlyCalendar";
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {
@@ -17,6 +17,8 @@ import {
     CALENDAR_ITEM_CLASS_TODAY,
     CALENDAR_ITEM_CLASS_WEEKEND
 } from "~/View/Constants/CalendarItemClass";
+
+const DATE_SWITCHER_PATH = '/View/DateSwitcher/DateSwitcher';
 
 const viewModel = new Observable();
 let calendarContent = undefined;
@@ -166,13 +168,46 @@ function switchCalendarToCurrentDate()
     updateCalendar();
 }
 
-function showDateSwitcher()
+function navigateTo(path, clearHistory, context = {})
 {
     calendarContent.removeChildren();
     Frame.topmost().navigate({
-        moduleName: '/View/DateSwitcher/DateSwitcher',
-        context: {
-            previousPagePath: '/View/MonthlyCalendar/MonthlyCalendar'
+        moduleName: path,
+        clearHistory: clearHistory,
+        context: context
+    });
+}
+
+function showDateSwitcher()
+{
+    navigateTo(DATE_SWITCHER_PATH, false, {
+        previousPagePath: '/View/MonthlyCalendar/MonthlyCalendar'
+    });
+}
+
+function changeCalendarView()
+{
+    const WEEK = 'Неделя';
+    const MONTH = 'Месяц';
+    const YEAR = 'Год';
+    Dialogs.action({
+        title: 'Режим',
+        cancelButtonText: 'Отмена',
+        actions: [WEEK, MONTH, YEAR],
+        cancelable: true,
+    }).then((calendarView) =>
+    {
+        switch (calendarView)
+        {
+            case WEEK:
+                navigateTo('/View/WeeklyCalendar/WeeklyCalendar', true);
+                return;
+            case YEAR:
+                navigateTo('/View/YearlyCalendar/YearlyCalendar', true);
+                return;
+            case MONTH:
+            default:
+                return;
         }
     });
 }
@@ -182,6 +217,7 @@ export function createViewModel(args)
     viewModel.incrementMonth = incrementMonth;
     viewModel.decrementMonth = decrementMonth;
     viewModel.switchToCurrentDate = switchCalendarToCurrentDate;
+    viewModel.changeCalendarView = changeCalendarView;
     viewModel.showDateSwitcher = showDateSwitcher;
     calendarContent = args.getViewById('calendarContent');
     updateCalendar();

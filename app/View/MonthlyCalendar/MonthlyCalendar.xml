@@ -1,7 +1,7 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="onNavigatingTo">
     <StackLayout class="body">
         <FlexboxLayout class="header">
-            <Button class="fas" text="&#xf0c9;" tap="{{ switchCalendarView }}" />
+            <Button class="fas" text="&#xf0c9;" tap="{{ changeCalendarView }}" />
             <Button class="fas switchToCurrentDate" text="&#xf073;" tap="{{ switchToCurrentDate }}"/>
         </FlexboxLayout>
         <StackLayout class="main">
