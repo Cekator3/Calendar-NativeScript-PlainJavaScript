@@ -50,8 +50,6 @@ function isLeapYear(year)
 export function getAmountOfDaysInMonth(year, month)
 {
     if ((month === MONTH_FEBRUARY) && isLeapYear(year))
-    {
         return 29;
-    }
     return amountOfDaysInMonth.get(month);
 }
