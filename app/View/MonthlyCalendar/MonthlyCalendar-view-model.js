@@ -1,4 +1,4 @@
-import {Dialogs, Frame, GridLayout, Observable} from '@nativescript/core'
+import {Dialogs, Frame, GridLayout, Label, Observable} from '@nativescript/core'
 import {generateMonthlyCalendar} from "~/Model/CalendarContentGenerator/generateMonthlyCalendar";
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {
@@ -14,7 +14,6 @@ import {
     CALENDAR_ITEM_CLASS_TODAY,
     CALENDAR_ITEM_CLASS_WEEKEND
 } from "~/View/Constants/CalendarItemClass";
-import {createCalendarItem} from "~/View/createCalendarItem";
 import {getCalendarWeekdaysItems} from "~/View/getCalendarWeekdaysItems";
 
 const DATE_SWITCHER_PATH = '/View/DateSwitcher/DateSwitcher';
@@ -49,58 +48,19 @@ function getCalendarDays()
     return generateMonthlyCalendar(true, year, month);
 }
 
-function generateCalendarContentItems()
+
+function updateCalendarItems()
 {
-    let calendarItems = [...getCalendarWeekdaysItems()];
     let calendarDays = getCalendarDays();
-    let row = 1;
     let col = 0;
-    for (let calendarDay of calendarDays)
+    for (let i = 0; i < calendarDays.length; i++)
     {
-        let cssClasses = generateCSSclassesOfCalendarDay(calendarDay, col);
-        calendarItems.push(createCalendarItem(calendarDay.getDay(), cssClasses));
+        let currItem = calendarContent.getChildAt(i + 7);
+        currItem.className = generateCSSclassesOfCalendarDay(calendarDays[i], col).join(' ');
+        currItem.text = calendarDays[i].getDay();
         col++;
         if (col === 7)
-        {
             col = 0;
-            row++;
-        }
-    }
-    return calendarItems;
-}
-
-function displayNewContentOfCalendar()
-{
-    let i = 0;
-    if (calendarContent.getChildAt(0) === undefined)
-    {
-        let calendarItems = generateCalendarContentItems();
-        for (let row = 0; row < 7; row++)
-        {
-            for (let col = 0; col < 7; col++)
-            {
-                calendarContent.addChild(calendarItems[i]);
-                GridLayout.setRow(calendarItems[i], row);
-                GridLayout.setColumn(calendarItems[i], col);
-                i++;
-            }
-        }
-    }
-    else
-    {
-        let calendarDays = getCalendarDays();
-        let col = 0;
-        let i = 0;
-        for (let day of calendarDays)
-        {
-            let currItem = calendarContent.getChildAt(i + 7);
-            currItem.className = "";
-            currItem.text = calendarDays[i].getDay();
-            i++;
-            col++;
-            if (col === 7)
-                col = 0;
-        }
     }
 }
 
@@ -115,7 +75,33 @@ function updateCalendarDateSwitcherName()
 function updateCalendar()
 {
     updateCalendarDateSwitcherName();
-    displayNewContentOfCalendar();
+    updateCalendarItems();
+}
+
+function initCalendarWeekdayItems()
+{
+    let weekdayItems = getCalendarWeekdaysItems();
+    for (let i = 0; i < 7; i++)
+    {
+        calendarContent.addChild(weekdayItems[i]);
+        GridLayout.setRow(weekdayItems[i], 0);
+        GridLayout.setColumn(weekdayItems[i], i);
+    }
+}
+
+function initCalendarContent()
+{
+    initCalendarWeekdayItems();
+    for (let row = 1; row < 7; row++)
+    {
+        for (let col = 0; col < 7; col++)
+        {
+            let item = new Label()
+            calendarContent.addChild(item);
+            GridLayout.setRow(item, row);
+            GridLayout.setColumn(item, col);
+        }
+    }
 }
 
 function incrementMonth()
@@ -196,6 +182,7 @@ export function createViewModel(args)
     viewModel.changeCalendarView = changeCalendarView;
     viewModel.showDateSwitcher = showDateSwitcher;
     calendarContent = args.getViewById('calendarContent');
+    initCalendarContent();
     updateCalendar();
     return viewModel;
 }
