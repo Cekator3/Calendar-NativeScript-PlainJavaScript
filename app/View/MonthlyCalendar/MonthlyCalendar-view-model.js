@@ -71,8 +71,17 @@ function generateCalendarContentItems()
 
 function displayNewContentOfCalendar()
 {
+    let start = new Date().getTime();
     let calendarItems = generateCalendarContentItems();
+    let stop = new Date().getTime();
+    console.log('Generating array of calendar items: ' + (stop - start) + 'ms.');
+
+    start = new Date().getTime();
     calendarContent.removeChildren();
+    stop = new Date().getTime();
+    console.log("Removing calendar's old items: " + (stop - start) + 'ms.');
+
+    start = new Date().getTime();
     let i = 0;
     for (let row = 0; row < 7; row++)
     {
@@ -84,6 +93,8 @@ function displayNewContentOfCalendar()
             i++;
         }
     }
+    stop = new Date().getTime();
+    console.log("Displaying calendar's new items: " + (stop - start) + 'ms.');
 }
 
 function updateCalendarDateSwitcherName()
