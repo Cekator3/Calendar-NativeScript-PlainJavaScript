@@ -27,17 +27,17 @@ function isOutOfMonth(calendarDay)
            UserSelectedCalendarDateGetMonth() !== calendarDay.getMonth();
 }
 
-function generateCSSclassesOfCalendarDay(calendarDay, col)
+function createCSSclassesForCalendarDay(calendarDay, col)
 {
-    let cssClasses = [];
+    let cssClasses = '';
     if (col >= 5)
-        cssClasses.push(CALENDAR_ITEM_CLASS_WEEKEND);
+        cssClasses += CALENDAR_ITEM_CLASS_WEEKEND + ' ';
     if (calendarDay.isToday())
-        cssClasses.push(CALENDAR_ITEM_CLASS_TODAY);
+        cssClasses += CALENDAR_ITEM_CLASS_TODAY + ' ';
     if (isOutOfMonth(calendarDay))
-        cssClasses.push(CALENDAR_ITEM_CLASS_OUT_OF_MONTH);
+        cssClasses += CALENDAR_ITEM_CLASS_OUT_OF_MONTH + ' ';
     else
-        cssClasses.push(CALENDAR_ITEM_CLASS_DEFAULT);
+        cssClasses += CALENDAR_ITEM_CLASS_DEFAULT + ' ';
     return cssClasses;
 }
 
@@ -51,17 +51,23 @@ function getCalendarDays()
 
 function updateCalendarItems()
 {
+    let start = new Date().getTime();
     let calendarDays = getCalendarDays();
+    let stop = new Date().getTime();
+    console.log('Creating array of calendar days: ' + (stop - start) + 'ms');
+    start = new Date().getTime();
     let col = 0;
     for (let i = 0; i < calendarDays.length; i++)
     {
         let currItem = calendarContent.getChildAt(i + 7);
-        currItem.className = generateCSSclassesOfCalendarDay(calendarDays[i], col).join(' ');
+        currItem.className = createCSSclassesForCalendarDay(calendarDays[i], col);
         currItem.text = calendarDays[i].getDay();
         col++;
         if (col === 7)
             col = 0;
     }
+    stop = new Date().getTime();
+    console.log('Updating calendar days: ' + (stop - start) + 'ms');
 }
 
 function updateCalendarDateSwitcherName()
@@ -89,7 +95,10 @@ function initCalendarWeekdayItems()
     }
 }
 
-function initCalendarContent()
+/**
+ * Calendar items - graphical elements that represent calendar days.
+ */
+function initCalendarItems()
 {
     initCalendarWeekdayItems();
     for (let row = 1; row < 7; row++)
@@ -116,7 +125,7 @@ function decrementMonth()
     updateCalendar();
 }
 
-function isCalendarDisplayingTodaysDay()
+function isCalendarOnCurrentDate()
 {
     return (UserSelectedCalendarDateGetYear() === getUsersCurrentYear()) &&
            (UserSelectedCalendarDateGetMonth() === getUsersCurrentMonth()) &&
@@ -125,7 +134,7 @@ function isCalendarDisplayingTodaysDay()
 
 function switchCalendarToCurrentDate()
 {
-    if (isCalendarDisplayingTodaysDay())
+    if (isCalendarOnCurrentDate())
         return;
     let currYear = getUsersCurrentYear();
     let currMonth = getUsersCurrentMonth();
@@ -144,14 +153,14 @@ function navigateTo(path, clearHistory, context = {})
     });
 }
 
-function showDateSwitcher()
+function letUserSwitchDateWithDateSwitcher()
 {
     navigateTo(DATE_SWITCHER_PATH, false, {
         previousPagePath: '/View/MonthlyCalendar/MonthlyCalendar'
     });
 }
 
-function changeCalendarView()
+function changeCalendarDisplayMode()
 {
     const WEEK = 'Неделя';
     const MONTH = 'Месяц';
@@ -179,10 +188,10 @@ export function createViewModel(args)
     viewModel.incrementMonth = incrementMonth;
     viewModel.decrementMonth = decrementMonth;
     viewModel.switchToCurrentDate = switchCalendarToCurrentDate;
-    viewModel.changeCalendarView = changeCalendarView;
-    viewModel.showDateSwitcher = showDateSwitcher;
+    viewModel.changeCalendarView = changeCalendarDisplayMode;
+    viewModel.showDateSwitcher = letUserSwitchDateWithDateSwitcher;
     calendarContent = args.getViewById('calendarContent');
-    initCalendarContent();
+    initCalendarItems();
     updateCalendar();
     return viewModel;
 }

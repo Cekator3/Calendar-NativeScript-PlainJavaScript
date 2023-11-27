@@ -6,8 +6,6 @@ import {getWeekdaysNames} from "~/Model/CalendarNames/WeekdayNames";
 import {createCalendarItem} from "~/View/createCalendarItem";
 import {CALENDAR_ITEM_CLASS_DEFAULT, CALENDAR_ITEM_CLASS_WEEKEND} from "~/View/Constants/CalendarItemClass";
 
-const calendarWeekdays = generateCalendarWeekdays();
-
 function generateCalendarWeekdays()
 {
     let calendarWeekdaysItems = [];
@@ -24,6 +22,9 @@ function generateCalendarWeekdays()
     }
     return calendarWeekdaysItems;
 }
+
+
+const calendarWeekdays = generateCalendarWeekdays();
 
 /**
  * Returns weekdays as calendar items. They can be used for displaying the calendar.
