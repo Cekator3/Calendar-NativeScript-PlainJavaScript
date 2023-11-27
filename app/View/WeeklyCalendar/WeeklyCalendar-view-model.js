@@ -1,4 +1,4 @@
-import {Dialogs, Frame, GridLayout, Observable} from '@nativescript/core'
+import {Dialogs, Frame, GridLayout, Label, Observable} from '@nativescript/core'
 import {getUsersCurrentDay, getUsersCurrentMonth, getUsersCurrentYear} from "~/Model/getCurrentDate";
 import {
     UserSelectedCalendarDateDecrementWeek, UserSelectedCalendarDateGetDay,
@@ -8,26 +8,35 @@ import {
 } from "~/Model/UserSelectedCalendarDate";
 import {getMonthName} from "~/Model/CalendarNames/MonthsNames";
 import {
-    CALENDAR_ITEM_CLASS_DEFAULT,
+    CALENDAR_ITEM_CLASS_DEFAULT, CALENDAR_ITEM_CLASS_OUT_OF_MONTH,
     CALENDAR_ITEM_CLASS_TODAY,
     CALENDAR_ITEM_CLASS_WEEKEND
 } from "~/View/Constants/CalendarItemClass";
 import {generateWeeklyCalendar} from "~/Model/CalendarContentGenerator/generateWeeklyCalendar";
 import {getCalendarWeekdaysItems} from "~/View/getCalendarWeekdaysItems";
-import {createCalendarItem} from "~/View/createCalendarItem";
 
 const DATE_SWITCHER_PATH = '/View/DateSwitcher/DateSwitcher';
 
 const viewModel = new Observable();
 let calendarContent = undefined;
 
-function generateCSSclassesOfCalendarDay(calendarDay, col)
+function isOutOfMonth(calendarDay)
 {
-    let cssClasses = [CALENDAR_ITEM_CLASS_DEFAULT];
+    return UserSelectedCalendarDateGetYear() !== calendarDay.getYear() ||
+        UserSelectedCalendarDateGetMonth() !== calendarDay.getMonth();
+}
+
+function createCSSclassesForCalendarDay(calendarDay, col)
+{
+    let cssClasses = '';
     if (col >= 5)
-        cssClasses.push(CALENDAR_ITEM_CLASS_WEEKEND);
+        cssClasses += CALENDAR_ITEM_CLASS_WEEKEND + ' ';
     if (calendarDay.isToday())
-        cssClasses.push(CALENDAR_ITEM_CLASS_TODAY);
+        cssClasses += CALENDAR_ITEM_CLASS_TODAY + ' ';
+    if (isOutOfMonth(calendarDay))
+        cssClasses += CALENDAR_ITEM_CLASS_OUT_OF_MONTH + ' ';
+    else
+        cssClasses += CALENDAR_ITEM_CLASS_DEFAULT + ' ';
     return cssClasses;
 }
 
@@ -39,34 +48,28 @@ function getCalendarDays()
     return generateWeeklyCalendar(year, month, day);
 }
 
-function generateCalendarContentItems()
+
+function updateCalendarItems()
 {
-    let calendarItems = [...getCalendarWeekdaysItems()];
+    let start = new Date().getTime();
     let calendarDays = getCalendarDays();
+    let stop = new Date().getTime();
+    console.log('Creating array of calendar days: ' + (stop - start) + 'ms');
+    start = new Date().getTime();
+    let col = 0;
     for (let i = 0; i < calendarDays.length; i++)
     {
-        let cssClasses = generateCSSclassesOfCalendarDay(calendarDays[i], i);
-        calendarItems.push(createCalendarItem(calendarDays[i].getDay(), cssClasses));
+        let currItem = calendarContent.getChildAt(i + 7);
+        currItem.className = createCSSclassesForCalendarDay(calendarDays[i], col);
+        currItem.text = calendarDays[i].getDay();
+        col++;
+        if (col === 7)
+            col = 0;
     }
-    return calendarItems;
+    stop = new Date().getTime();
+    console.log('Updating calendar days: ' + (stop - start) + 'ms');
 }
 
-function updateContentOfCalendar()
-{
-    let calendarItems = generateCalendarContentItems();
-    calendarContent.removeChildren();
-    let i = 0;
-    for (let row = 0; row < 2; row++)
-    {
-        for (let col = 0; col < 7; col++)
-        {
-            calendarContent.addChild(calendarItems[i]);
-            GridLayout.setRow(calendarItems[i], row);
-            GridLayout.setColumn(calendarItems[i], col);
-            i++;
-        }
-    }
-}
 
 function updateCalendarDateSwitcher()
 {
@@ -79,7 +82,36 @@ function updateCalendarDateSwitcher()
 function updateCalendar()
 {
     updateCalendarDateSwitcher();
-    updateContentOfCalendar();
+    updateCalendarItems();
+}
+
+function initCalendarWeekdayItems()
+{
+    let weekdayItems = getCalendarWeekdaysItems();
+    for (let i = 0; i < 7; i++)
+    {
+        calendarContent.addChild(weekdayItems[i]);
+        GridLayout.setRow(weekdayItems[i], 0);
+        GridLayout.setColumn(weekdayItems[i], i);
+    }
+}
+
+/**
+ * Calendar items - graphical elements that represent calendar days.
+ */
+function initCalendarItems()
+{
+    initCalendarWeekdayItems();
+    for (let row = 1; row < 7; row++)
+    {
+        for (let col = 0; col < 7; col++)
+        {
+            let item = new Label()
+            calendarContent.addChild(item);
+            GridLayout.setRow(item, row);
+            GridLayout.setColumn(item, col);
+        }
+    }
 }
 
 function incrementWeek()
@@ -94,7 +126,7 @@ function decrementWeek()
     updateCalendar();
 }
 
-function isCalendarDisplayingTodaysDay()
+function isCalendarOnCurrentDate()
 {
     return (UserSelectedCalendarDateGetYear() === getUsersCurrentYear()) &&
            (UserSelectedCalendarDateGetMonth() === getUsersCurrentMonth());
@@ -102,7 +134,7 @@ function isCalendarDisplayingTodaysDay()
 
 function switchCalendarToCurrentDate()
 {
-    if (isCalendarDisplayingTodaysDay())
+    if (isCalendarOnCurrentDate())
         return;
     let currYear = getUsersCurrentYear();
     let currMonth = getUsersCurrentMonth();
@@ -122,14 +154,14 @@ function navigateTo(path, clearHistory, context = {})
     });
 }
 
-function showDateSwitcher()
+function letUserSwitchDateWithDateSwitcher()
 {
     navigateTo(DATE_SWITCHER_PATH, false, {
         previousPagePath: '/View/WeeklyCalendar/WeeklyCalendar'
     });
 }
 
-function changeCalendarView()
+function changeCalendarDisplayMode()
 {
     const WEEK = 'Неделя';
     const MONTH = 'Месяц';
@@ -156,10 +188,11 @@ export function createViewModel(args)
 {
     viewModel.incrementWeek = incrementWeek;
     viewModel.decrementWeek = decrementWeek;
-    viewModel.switchToCurrentDate = switchCalendarToCurrentDate;
-    viewModel.changeCalendarView = changeCalendarView;
-    viewModel.showDateSwitcher = showDateSwitcher;
+    viewModel.switchCalendarToCurrentDate = switchCalendarToCurrentDate;
+    viewModel.changeCalendarDisplayMode = changeCalendarDisplayMode;
+    viewModel.letUserSwitchDateWithDateSwitcher = letUserSwitchDateWithDateSwitcher;
     calendarContent = args.getViewById('calendarContent');
+    initCalendarItems();
     updateCalendar();
     return viewModel;
 }

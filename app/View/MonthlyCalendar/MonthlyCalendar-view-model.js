@@ -48,7 +48,6 @@ function getCalendarDays()
     return generateMonthlyCalendar(true, year, month);
 }
 
-
 function updateCalendarItems()
 {
     let start = new Date().getTime();
