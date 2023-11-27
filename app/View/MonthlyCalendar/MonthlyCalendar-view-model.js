@@ -187,9 +187,9 @@ export function createViewModel(args)
 {
     viewModel.incrementMonth = incrementMonth;
     viewModel.decrementMonth = decrementMonth;
-    viewModel.switchToCurrentDate = switchCalendarToCurrentDate;
-    viewModel.changeCalendarView = changeCalendarDisplayMode;
-    viewModel.showDateSwitcher = letUserSwitchDateWithDateSwitcher;
+    viewModel.switchCalendarToCurrentDate = switchCalendarToCurrentDate;
+    viewModel.changeCalendarDisplayMode = changeCalendarDisplayMode;
+    viewModel.letUserSwitchDateWithDateSwitcher = letUserSwitchDateWithDateSwitcher;
     calendarContent = args.getViewById('calendarContent');
     initCalendarItems();
     updateCalendar();

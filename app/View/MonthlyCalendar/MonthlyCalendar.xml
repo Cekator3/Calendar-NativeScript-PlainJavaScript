@@ -1,13 +1,13 @@
 <Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="onNavigatingTo">
     <StackLayout class="body">
         <FlexboxLayout class="header">
-            <Button class="fas" text="&#xf0c9;" tap="{{ changeCalendarView }}" />
-            <Button class="fas switchToCurrentDate" text="&#xf073;" tap="{{ switchToCurrentDate }}"/>
+            <Button class="fas" text="&#xf0c9;" tap="{{ changeCalendarDisplayMode }}" />
+            <Button class="fas switchToCurrentDate" text="&#xf073;" tap="{{ switchCalendarToCurrentDate }}"/>
         </FlexboxLayout>
         <StackLayout class="main">
             <FlexboxLayout class="header-date-picker">
                 <Button class="fas dateIncrementer" text="&#xf060;" tap="{{ decrementMonth }}"/>
-                <Button class="dateSwitcher" text="{{ dateSwitcherName }}" tap="{{ showDateSwitcher }}"/>
+                <Button class="dateSwitcher" text="{{ dateSwitcherName }}" tap="{{ letUserSwitchDateWithDateSwitcher }}"/>
                 <Button class="fas dateIncrementer" text="&#xf061;" tap="{{ incrementMonth }}"/>
             </FlexboxLayout>
             <GridLayout id="calendarContent" columns="*, *, *, *, *, *, *" rows="*, 2*, 2*, 2*, 2*, 2*, 2*" />
