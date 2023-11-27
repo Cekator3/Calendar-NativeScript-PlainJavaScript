@@ -71,30 +71,37 @@ function generateCalendarContentItems()
 
 function displayNewContentOfCalendar()
 {
-    let start = new Date().getTime();
-    let calendarItems = generateCalendarContentItems();
-    let stop = new Date().getTime();
-    console.log('Generating array of calendar items: ' + (stop - start) + 'ms.');
-
-    start = new Date().getTime();
-    calendarContent.removeChildren();
-    stop = new Date().getTime();
-    console.log("Removing calendar's old items: " + (stop - start) + 'ms.');
-
-    start = new Date().getTime();
     let i = 0;
-    for (let row = 0; row < 7; row++)
+    if (calendarContent.getChildAt(0) === undefined)
     {
-        for (let col = 0; col < 7; col++)
+        let calendarItems = generateCalendarContentItems();
+        for (let row = 0; row < 7; row++)
         {
-            calendarContent.addChild(calendarItems[i]);
-            GridLayout.setRow(calendarItems[i], row);
-            GridLayout.setColumn(calendarItems[i], col);
-            i++;
+            for (let col = 0; col < 7; col++)
+            {
+                calendarContent.addChild(calendarItems[i]);
+                GridLayout.setRow(calendarItems[i], row);
+                GridLayout.setColumn(calendarItems[i], col);
+                i++;
+            }
         }
     }
-    stop = new Date().getTime();
-    console.log("Displaying calendar's new items: " + (stop - start) + 'ms.');
+    else
+    {
+        let calendarDays = getCalendarDays();
+        let col = 0;
+        let i = 0;
+        for (let day of calendarDays)
+        {
+            let currItem = calendarContent.getChildAt(i + 7);
+            currItem.className = "";
+            currItem.text = calendarDays[i].getDay();
+            i++;
+            col++;
+            if (col === 7)
+                col = 0;
+        }
+    }
 }
 
 function updateCalendarDateSwitcherName()
